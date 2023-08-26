@@ -76,8 +76,6 @@ Future<void> main() async {
 
   bool? isSavedAccount = CacheHelper.getData(key: 'isSavedAccount');
 
-  // isFirstSignIn = CacheHelper.getData(key: 'isFirstSignIn');
-
   isGoogleSignIn = CacheHelper.getData(key: 'isGoogleSignIn');
 
 
@@ -102,20 +100,6 @@ Future<void> main() async {
     widgetStart = const WelcomeScreen();
   }
 
-
-  // print(isStarted);
-  //
-  // print(isDark);
-  //
-  // print(isSavedAccount);
-  //
-  // print(uId);
-  //
-  // print(isFirstSignIn);
-  //
-  // print(widgetStart);
-  //
-  // print(isGoogleSignIn);
 
   runApp(MyApp(
     startWidget: widgetStart,
