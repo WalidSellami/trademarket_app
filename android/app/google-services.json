@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "231246152811",
+    "project_id": "trademarket-app",
+    "storage_bucket": "trademarket-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:231246152811:android:7ea86bfa826b7b61085d2e",
+        "android_client_info": {
+          "package_name": "com.example.trade_market_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "231246152811-abo37a1bvtcmlv3aiidsrqtqlp5u5q0i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUojlGmN5i_jbEkx4JMxSuGEC14_uBL7w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "231246152811-abo37a1bvtcmlv3aiidsrqtqlp5u5q0i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
