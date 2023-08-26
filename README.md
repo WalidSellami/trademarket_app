@@ -1,6 +1,6 @@
 # trade_market
 
-A new Flutter project.
+A new Flutter app project --> A market for buying-selling products and some features.
 
 ## Getting Started
 
