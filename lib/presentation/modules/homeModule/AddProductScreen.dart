@@ -40,7 +40,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   void scrollToBottom() {
     if(scrollController.hasClients) {
       scrollController.animateTo(
-          scrollController.position.maxScrollExtent + 100,
+          scrollController.position.maxScrollExtent,
           duration: const Duration(milliseconds: 400),
           curve: Curves.easeIn);
     }

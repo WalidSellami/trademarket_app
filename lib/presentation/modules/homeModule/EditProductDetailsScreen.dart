@@ -46,13 +46,11 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
   final ScrollController scrollController = ScrollController();
 
 
-  final ScrollController controller = ScrollController();
-
   void scrollToBottom() {
     if(scrollController.hasClients) {
       scrollController.animateTo(
           scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 400),
           curve: Curves.easeIn);
     }
   }
@@ -71,7 +69,7 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
 
   @override
   void dispose() {
-    controller.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -260,7 +258,6 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
                                   child: SizedBox(
                                     height: 250.0,
                                     child: ListView.separated(
-                                      controller: controller,
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: (context , index) => buildItemImageProduct(widget.productModel.images?[index], index, context),
                                       separatorBuilder: (context , index) => const SizedBox(

@@ -1,12 +1,10 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:trade_market_app/shared/components/Components.dart';
 import 'package:trade_market_app/shared/cubit/checkCubit/CheckCubit.dart';
 import 'package:trade_market_app/shared/cubit/checkCubit/CheckStates.dart';
-import 'package:trade_market_app/shared/styles/Styles.dart';
 
 class SplashScreen extends StatefulWidget {
 
@@ -47,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
         if(state is CheckConnectionState) {
           if(CheckCubit.get(context).hasInternet == false) {
             Future.delayed(const Duration(milliseconds: 1500)).then((value) {
-              showAlertConnection(context);
+              showAlertCheckConnection(context, isSplashScreen: true);
               setState(() {
                 isAnimate = false;
               });
@@ -79,56 +77,4 @@ class _SplashScreenState extends State<SplashScreen> {
       },
     );
   }
-
-  dynamic showAlertConnection(BuildContext context) {
-    return showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return WillPopScope(
-          onWillPop: () async {
-            return false;
-          },
-          child: AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14.0,),
-            ),
-            title: const Text(
-              'No Internet Connection',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 17.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            content:  const Text(
-              'You are currently offline!',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 17.0,
-                // fontWeight: FontWeight.bold,
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  SystemNavigator.pop();
-                },
-                child: Text(
-                  'Exit',
-                  style: TextStyle(
-                    color: redColor,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-
 }

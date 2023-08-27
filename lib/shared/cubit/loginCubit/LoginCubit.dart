@@ -118,7 +118,6 @@ class LoginCubit extends Cubit<LoginStates> {
 
       FirebaseFirestore.instance.collection('users').doc(value.user?.uid).get().then((v) async {
 
-
         CacheHelper.saveData(key: 'isGoogleSignIn', value: true).then((value) {
           isGoogleSignIn = true;
         });
@@ -133,12 +132,6 @@ class LoginCubit extends Cubit<LoginStates> {
               uId: value.user?.uid,
               email: value.user?.email,
               imageProfile: value.user?.photoURL);
-
-
-          // CacheHelper.saveData(key: 'isFirstSignIn', value: true).then((value) {
-          //   isFirstSignIn = true;
-          // });
-
 
         } else {
 
@@ -185,6 +178,7 @@ class LoginCubit extends Cubit<LoginStates> {
       uId: uId,
       imageProfile: imageProfile ?? profile,
       isInfoComplete: false,
+      senders: {},
       deviceToken: deviceToken,
     );
 

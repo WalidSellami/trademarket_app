@@ -43,6 +43,13 @@ class _AccountAccessScreenState extends State<AccountAccessScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    passwordController.dispose();
+    super.dispose();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

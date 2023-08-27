@@ -34,6 +34,13 @@ class _SearchProductScreenState extends State<SearchProductScreen> {
     });
   }
 
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CheckCubit , CheckStates>(

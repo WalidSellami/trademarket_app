@@ -480,7 +480,7 @@ dynamic showAlertExit(BuildContext context) {
 }
 
 
-dynamic showAlertCheckConnection(BuildContext context) {
+dynamic showAlertCheckConnection(BuildContext context , {bool isSplashScreen = false}) {
   return showDialog(
     barrierDismissible: false,
     context: context,
@@ -510,6 +510,7 @@ dynamic showAlertCheckConnection(BuildContext context) {
             ),
           ),
           actions: [
+            if(!isSplashScreen)
             TextButton(
               onPressed: () {
                 Navigator.pop(context);

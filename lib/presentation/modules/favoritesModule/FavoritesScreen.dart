@@ -36,6 +36,7 @@ class FavoritesScreen extends StatelessWidget {
               body: ConditionalBuilder(
                 condition: myFavoriteProducts.isNotEmpty,
                 builder: (context) => ListView.separated(
+                  physics: const BouncingScrollPhysics(),
                       itemBuilder: (context , index) => buildItemMyFavoriteProduct(myFavoriteProducts[index], myIdFavoriteProducts[index], numberFavorites, context),
                       separatorBuilder: (context , index) => const SizedBox(
                         height: 20.0,
