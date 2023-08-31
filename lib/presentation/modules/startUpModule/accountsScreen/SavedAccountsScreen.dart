@@ -225,7 +225,7 @@ class _SavedAccountsScreenState extends State<SavedAccountsScreen> {
                 imageProfile: account['image_profile'],)));
             } else {
               showLoading(context);
-              await LoginCubit.get(context).signInWithGoogleAccount();
+              await LoginCubit.get(context).signInWithGoogle(context);
             }
           } else {
             showFlutterToast(

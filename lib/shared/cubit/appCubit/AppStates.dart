@@ -378,5 +378,7 @@ class ErrorDeleteMessageAppState extends AppStates {
 }
 
 
+class SuccessActiveSearchAppState extends AppStates {}
+
 // Send Notification
 class SuccessSendNotificationAppState extends AppStates {}

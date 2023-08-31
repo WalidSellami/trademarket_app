@@ -126,287 +126,295 @@ class _UserChatScreenState extends State<UserChatScreen> {
                 var messages = cubit.messages;
                 var idMessages = cubit.idMessages;
 
-                return Scaffold(
-                  appBar: defaultAppBar(
-                    onPress: () {
-                      focusNode.unfocus();
-                      Navigator.pop(context);
-                    },
-                    title: widget.fullName,
-                  ),
-                  body: Column(
-                    children: [
-                      Expanded(
-                        child: ConditionalBuilder(
-                          condition: messages.isNotEmpty,
-                          builder: (context) => Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ListView.separated(
-                              controller: scrollController,
-                              physics: const BouncingScrollPhysics(),
-                                itemBuilder: (context , index) {
+                return WillPopScope(
+                  onWillPop: () async {
+                    focusNode.unfocus();
+                    Navigator.pop(context);
+                    cubit.clearMessages();
+                    return true;
+                  },
+                  child: Scaffold(
+                    appBar: defaultAppBar(
+                      onPress: () {
+                        focusNode.unfocus();
+                        Navigator.pop(context);
+                        cubit.clearMessages();
+                      },
+                      title: widget.fullName,
+                    ),
+                    body: Column(
+                      children: [
+                        Expanded(
+                          child: ConditionalBuilder(
+                            condition: messages.isNotEmpty,
+                            builder: (context) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListView.separated(
+                                controller: scrollController,
+                                  itemBuilder: (context , index) {
 
-                                   if(messages[index].senderId == uId) {
+                                     if(messages[index].senderId == uId) {
 
-                                     if(messages[index].messageImage != '') {
+                                       if(messages[index].messageImage != '') {
 
-                                       return buildItemSenderMessageWithImage(messages[index] , idMessages[index] , index);
+                                         return buildItemSenderMessageWithImage(messages[index] , idMessages[index] , index);
+
+                                       } else {
+
+                                         return buildItemSenderMessage(messages[index] , idMessages[index]);
+
+                                       }
 
                                      } else {
 
-                                       return buildItemSenderMessage(messages[index] , idMessages[index]);
+                                       if(messages[index].messageImage != '') {
+
+                                         return buildItemReceiverMessageWithImage(messages[index] , idMessages[index] , index);
+
+                                       } else {
+
+                                         return buildItemReceiverMessage(messages[index] , idMessages[index]);
+
+                                       }
+
 
                                      }
 
-                                   } else {
-
-                                     if(messages[index].messageImage != '') {
-
-                                       return buildItemReceiverMessageWithImage(messages[index] , idMessages[index] , index);
-
-                                     } else {
-
-                                       return buildItemReceiverMessage(messages[index] , idMessages[index]);
-
-                                     }
-
-
-                                   }
-
-                                },
-                                separatorBuilder: (context , index) => const SizedBox(
-                                  height: 20.0,
-                                ),
-                                itemCount: messages.length),
-                          ),
-                          fallback: (context) => (state is LoadingGetMessagesAppState) ?
-                             Center(child: CircularLoading(os: getOs())) :
-                             const Center(
-                               child: Text(
-                                 'There is no messages',
-                                 style: TextStyle(
-                                   fontSize: 17.0,
-                                   fontWeight: FontWeight.bold,
+                                  },
+                                  separatorBuilder: (context , index) => const SizedBox(
+                                    height: 20.0,
+                                  ),
+                                  itemCount: messages.length),
+                            ),
+                            fallback: (context) => (state is LoadingGetMessagesAppState) ?
+                               Center(child: CircularLoading(os: getOs())) :
+                               const Center(
+                                 child: Text(
+                                   'There is no messages',
+                                   style: TextStyle(
+                                     fontSize: 17.0,
+                                     fontWeight: FontWeight.bold,
+                                   ),
                                  ),
                                ),
-                             ),
+                          ),
                         ),
-                      ),
-                      if(cubit.messageImage != null)
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      if(cubit.messageImage != null)
-                        SizedBox(
-                          height: 175.0,
-                          width: 175.0,
-                          child: Stack(
-                            alignment: Alignment.topRight,
-                            children: [
-                              Align(
-                                alignment: Alignment.center,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    showFullImage('', 'img', context , imageFile: cubit.messageImage);
-                                  },
-                                  child: Hero(
-                                    tag: 'img',
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8.0),
-                                        border: Border.all(
-                                          width: 0.0,
-                                          color: ThemeCubit.get(context).isDark ? Colors.white : Colors.black,
+                        if(cubit.messageImage != null)
+                        const SizedBox(
+                          height: 20.0,
+                        ),
+                        if(cubit.messageImage != null)
+                          SizedBox(
+                            height: 175.0,
+                            width: 175.0,
+                            child: Stack(
+                              alignment: Alignment.topRight,
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showFullImage('', 'img', context , imageFile: cubit.messageImage);
+                                    },
+                                    child: Hero(
+                                      tag: 'img',
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          border: Border.all(
+                                            width: 0.0,
+                                            color: ThemeCubit.get(context).isDark ? Colors.white : Colors.black,
+                                          ),
                                         ),
-                                      ),
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      child: Image.file(File(cubit.messageImage!.path),
-                                       width: 150.0,
-                                       height: 150.0,
-                                        fit: BoxFit.fitWidth,
+                                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                                        child: Image.file(File(cubit.messageImage!.path),
+                                         width: 150.0,
+                                         height: 150.0,
+                                          fit: BoxFit.fitWidth,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              CircleAvatar(
-                                radius: 20.0,
-                                backgroundColor: ThemeCubit.get(context).isDark ? Colors.grey.shade800.withOpacity(.7) : Colors.grey.shade300,
-                                child: IconButton(
+                                CircleAvatar(
+                                  radius: 20.0,
+                                  backgroundColor: ThemeCubit.get(context).isDark ? Colors.grey.shade800.withOpacity(.7) : Colors.grey.shade300,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        cubit.clearMessageImage();
+                                        if(msgController.text.isEmpty) {
+                                          setState(() {
+                                            isVisible = false;
+                                          });
+                                        }
+                                      },
+                                      icon: Icon(
+                                        Icons.close_rounded,
+                                        color: ThemeCubit.get(context).isDark ? Colors.white : Colors.black,
+                                      ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        Material(
+                          elevation: 16.0,
+                          color:Theme.of(context).scaffoldBackgroundColor,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12.0,
+                              horizontal: 4.0,
+                            ),
+                            child: Row(
+                              children: [
+                                IconButton(
                                     onPressed: () {
-                                      cubit.clearMessageImage();
-                                      if(msgController.text.isEmpty) {
-                                        setState(() {
-                                          isVisible = false;
-                                        });
+                                      focusNode.unfocus();
+                                      if(checkCubit.hasInternet) {
+                                        showModalBottomSheet(context: context,
+                                          builder: (context) {
+                                            return SafeArea(
+                                              child: Material(
+                                                color: ThemeCubit.get(context).isDark
+                                                    ? HexColor('161616')
+                                                    : Colors.white,
+                                                child: Wrap(
+                                                  children: <Widget>[
+                                                    ListTile(
+                                                      leading: const Icon(
+                                                          Icons.camera_alt_rounded),
+                                                      title: const Text(
+                                                          'Take a new photo'),
+                                                      onTap: () async {
+                                                        cubit.getMessageImage(ImageSource.camera);
+                                                        Navigator.pop(
+                                                            context);
+                                                      },
+                                                    ),
+                                                    ListTile(
+                                                      leading: const Icon(
+                                                          Icons.photo_library_rounded),
+                                                      title: const Text(
+                                                          'Choose from gallery'),
+                                                      onTap: () async {
+                                                        cubit.getMessageImage(ImageSource.gallery);
+                                                        Navigator.pop(
+                                                            context);
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);
                                       }
                                     },
                                     icon: Icon(
-                                      Icons.close_rounded,
-                                      color: ThemeCubit.get(context).isDark ? Colors.white : Colors.black,
+                                      Icons.camera_alt_rounded,
+                                      color: Theme.of(context).colorScheme.primary,
                                     ),
+                                  tooltip: 'Image',
+                                  enableFeedback: true,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      Material(
-                        elevation: 16.0,
-                        color:Theme.of(context).scaffoldBackgroundColor,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 12.0,
-                            horizontal: 4.0,
-                          ),
-                          child: Row(
-                            children: [
-                              IconButton(
-                                  onPressed: () {
-                                    focusNode.unfocus();
-                                    if(checkCubit.hasInternet) {
-                                      showModalBottomSheet(context: context,
-                                        builder: (context) {
-                                          return SafeArea(
-                                            child: Material(
-                                              color: ThemeCubit.get(context).isDark
-                                                  ? HexColor('161616')
-                                                  : Colors.white,
-                                              child: Wrap(
-                                                children: <Widget>[
-                                                  ListTile(
-                                                    leading: const Icon(
-                                                        Icons.camera_alt_rounded),
-                                                    title: const Text(
-                                                        'Take a new photo'),
-                                                    onTap: () async {
-                                                      cubit.getMessageImage(ImageSource.camera);
-                                                      Navigator.pop(
-                                                          context);
-                                                    },
-                                                  ),
-                                                  ListTile(
-                                                    leading: const Icon(
-                                                        Icons.photo_library_rounded),
-                                                    title: const Text(
-                                                        'Choose from gallery'),
-                                                    onTap: () async {
-                                                      cubit.getMessageImage(ImageSource.gallery);
-                                                      Navigator.pop(
-                                                          context);
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    } else {
-                                      showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);
-                                    }
-                                  },
-                                  icon: Icon(
-                                    Icons.camera_alt_rounded,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
-                                tooltip: 'Image',
-                                enableFeedback: true,
-                              ),
-                              const SizedBox(
-                                width: 8.0,
-                              ),
-                              Expanded(
-                                child: TextFormField(
-                                  focusNode: focusNode,
-                                  controller: msgController,
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: null,
-                                  decoration: InputDecoration(
-                                    constraints: const BoxConstraints(
-                                      maxHeight: 120.0,
-                                    ),
-                                    hintText: 'Write something ...',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      borderSide: const BorderSide(
-                                        width: 2.0,
+                                const SizedBox(
+                                  width: 8.0,
+                                ),
+                                Expanded(
+                                  child: TextFormField(
+                                    focusNode: focusNode,
+                                    controller: msgController,
+                                    keyboardType: TextInputType.multiline,
+                                    maxLines: null,
+                                    decoration: InputDecoration(
+                                      constraints: const BoxConstraints(
+                                        maxHeight: 120.0,
+                                      ),
+                                      hintText: 'Write something ...',
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(30.0),
+                                        borderSide: const BorderSide(
+                                          width: 2.0,
+                                        ),
                                       ),
                                     ),
+                                    onChanged: (value) {
+                                       if(value.isNotEmpty) {
+                                         setState(() {
+                                           isVisible = true;
+                                         });
+                                       } else {
+                                         setState(() {
+                                           isVisible = false;
+                                         });
+                                       }
+                                    },
                                   ),
-                                  onChanged: (value) {
-                                     if(value.isNotEmpty) {
-                                       setState(() {
-                                         isVisible = true;
-                                       });
-                                     } else {
-                                       setState(() {
-                                         isVisible = false;
-                                       });
-                                     }
-                                  },
                                 ),
-                              ),
-                              const SizedBox(
-                                width: 8.0,
-                              ),
-                              Visibility(
-                                visible: isVisible,
-                                child: ConditionalBuilder(
-                                  condition: state is! LoadingSendMessageAppState,
-                                  builder: (context) => IconButton(
-                                      onPressed: () async {
+                                const SizedBox(
+                                  width: 8.0,
+                                ),
+                                Visibility(
+                                  visible: isVisible,
+                                  child: ConditionalBuilder(
+                                    condition: state is! LoadingSendMessageAppState,
+                                    builder: (context) => IconButton(
+                                        onPressed: () async {
 
-                                        if(checkCubit.hasInternet) {
+                                          if(checkCubit.hasInternet) {
 
-                                          if(cubit.messageImage == null) {
+                                            if(cubit.messageImage == null) {
 
-                                            cubit.sendMessage(
-                                                receiverId: widget.receiverId,
-                                                messageText: msgController.text,
-                                            );
+                                              cubit.sendMessage(
+                                                  receiverId: widget.receiverId,
+                                                  messageText: msgController.text,
+                                              );
 
-                                            await cubit.sendNotification(
-                                                title: cubit.userProfile!.fullName.toString(),
-                                                body: 'Sent Message',
-                                                deviceToken: cubit.sellerProfile!.deviceToken.toString());
+                                              await cubit.sendNotification(
+                                                  title: cubit.userProfile!.fullName.toString(),
+                                                  body: 'Sent Message',
+                                                  deviceToken: cubit.sellerProfile!.deviceToken.toString());
+
+                                            } else {
+
+                                              cubit.uploadImageMessage(
+                                                  receiverId: widget.receiverId,
+                                                  messageText: msgController.text,
+                                                  context: context);
+
+                                              await Future.delayed(const Duration(milliseconds: 800)).then((value) async {
+                                                await cubit.sendNotification(
+                                                    title: cubit.userProfile!.fullName.toString(),
+                                                    body: 'Sent Image',
+                                                    deviceToken: cubit.sellerProfile!.deviceToken.toString());
+                                              });
+                                            }
 
                                           } else {
 
-                                            cubit.uploadImageMessage(
-                                                receiverId: widget.receiverId,
-                                                messageText: msgController.text,
-                                                context: context);
+                                            showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);
 
-                                            await Future.delayed(const Duration(milliseconds: 800)).then((value) async {
-                                              await cubit.sendNotification(
-                                                  title: cubit.userProfile!.fullName.toString(),
-                                                  body: 'Sent Image',
-                                                  deviceToken: cubit.sellerProfile!.deviceToken.toString());
-                                            });
                                           }
 
-                                        } else {
-
-                                          showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);
-
-                                        }
-
-                                      },
-                                      icon: Icon(
-                                        Icons.send_rounded,
-                                        color: Theme.of(context).colorScheme.primary,
-                                      ),
-                                    tooltip: 'Send',
-                                    enableFeedback: true,
+                                        },
+                                        icon: Icon(
+                                          Icons.send_rounded,
+                                          color: Theme.of(context).colorScheme.primary,
+                                        ),
+                                      tooltip: 'Send',
+                                      enableFeedback: true,
+                                    ),
+                                    fallback: (context) => CircularLoading(os: getOs()),
                                   ),
-                                  fallback: (context) => CircularLoading(os: getOs()),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },

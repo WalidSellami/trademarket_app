@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:trade_market_app/shared/adaptive/anotherCircularLoading/AnotherCircularLoading.dart';
 import 'package:trade_market_app/shared/components/Components.dart';
+import 'package:trade_market_app/shared/components/Constants.dart';
 import 'package:trade_market_app/shared/cubit/appCubit/AppCubit.dart';
 import 'package:trade_market_app/shared/cubit/appCubit/AppStates.dart';
 import 'package:trade_market_app/shared/cubit/checkCubit/CheckCubit.dart';
@@ -247,14 +249,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         ),
                         if(cubit.images.isNotEmpty)
                         SizedBox(
-                          height: 250.0,
+                          height: 300.0,
                           child: Stack(
                             alignment: Alignment.bottomRight,
                             children: [
                               Align(
                                 alignment: Alignment.center,
                                 child: SizedBox(
-                                  height: 200.0,
+                                  height: 250.0,
                                   child: ListView.separated(
                                     scrollDirection: Axis.horizontal,
                                       itemBuilder: (context , index) => buildItemImage(cubit.images[index], index, context),
@@ -434,6 +436,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
             child: Image.file(File(image.path),
                width: MediaQuery.of(context).size.width / 1.05,
                fit: BoxFit.fitWidth,
+              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                if(frame == null) {
+                  return SizedBox(
+                    height: 250.0,
+                    width: MediaQuery.of(context).size.width / 1.05,
+                    child: Center(child: AnotherCircularLoading(os: getOs())),
+                  );
+                }
+                return child;
+              },
             ),
           ),
         ),

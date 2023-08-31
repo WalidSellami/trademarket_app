@@ -30,6 +30,9 @@ class ProductDetailsScreen extends StatefulWidget {
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   final PageController controller = PageController();
 
+  final GlobalKey globalKey = GlobalKey();
+
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CheckCubit , CheckStates>(
@@ -88,7 +91,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         itemBuilder: (context, index) => Stack(
                           alignment: Alignment.bottomCenter,
                           children: [
-                            buildItemPageView(widget.productDetails.images?[index], index),
+                            buildItemPageView(globalKey, widget.productDetails.images?[index], index),
                             Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: Container(
@@ -146,9 +149,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  Widget buildItemPageView(image, index) => GestureDetector(
+  Widget buildItemPageView(globalKey, image, index) => GestureDetector(
         onTap: () {
-          showFullImage(image, index.toString(), context);
+          showFullImageAndSave(globalKey, image, index.toString(), context , isMyPhotos: false);
         },
         child: Hero(
           tag: index.toString(),

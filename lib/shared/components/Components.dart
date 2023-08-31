@@ -420,7 +420,7 @@ dynamic showLoading(context) => showDialog(
         child: Container(
             padding: const EdgeInsets.all(26.0),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14.0),
+              borderRadius: BorderRadius.circular(18.0),
               color: ThemeCubit.get(context).isDark ? HexColor('191919') : Colors.white,
             ),
             clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -565,6 +565,16 @@ dynamic showFullImage(image , String tag , context , {XFile? imageFile}) {
             child: (imageFile != null) ? Image.file(
                 File(imageFile.path),
                 fit: BoxFit.fitWidth,
+              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                if(frame == null) {
+                  return SizedBox(
+                    width: double.infinity,
+                    height: 500.0,
+                    child: Center(child: CircularLoading(os: getOs(),)),
+                  );
+                }
+                return child;
+              },
             ) : Image.network('$image',
               fit: BoxFit.fitWidth,
               frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
@@ -724,6 +734,16 @@ dynamic showFullImageAndSave(globalKey , image , String tag , context , {File? i
               child: (imageFile != null) ?  Image.file(
                   File(imageFile.path),
                   fit: BoxFit.fitWidth,
+                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                  if(frame == null) {
+                    return SizedBox(
+                      width: double.infinity,
+                      height: 500.0,
+                      child: Center(child: CircularLoading(os: getOs(),)),
+                    );
+                  }
+                  return child;
+                },
               ) : Image.network('$image',
                 fit: BoxFit.fitWidth,
                 frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {

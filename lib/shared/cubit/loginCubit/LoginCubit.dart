@@ -55,40 +55,40 @@ class LoginCubit extends Cubit<LoginStates> {
 
 
   // Already have account google signed
-  Future<void> signInWithGoogleAccount() async {
-    emit(LoadingLoginWithGoogleAccountState());
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    FirebaseAuth.instance.signInWithCredential(credential).then((value) async {
-
-      CacheHelper.saveData(key: 'isGoogleSignIn', value: true).then((value) {
-        isGoogleSignIn = true;
-      });
-
-      var deviceToken = await getDeviceToken();
-
-      FirebaseFirestore.instance.collection('users').doc(value.user?.uid).update({
-        'device_token': deviceToken,
-      });
-
-      emit(SuccessLoginWithGoogleAccountState(value.user!.uid));
-
-    }).catchError((error) {
-
-      emit(ErrorLoginWithGoogleAccountState(error));
-    });
-  }
+  // Future<void> signInWithGoogleAccount() async {
+  //   emit(LoadingLoginWithGoogleAccountState());
+  //   // Trigger the authentication flow
+  //   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  //
+  //   // Obtain the auth details from the request
+  //   final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+  //
+  //   // Create a new credential
+  //   final credential = GoogleAuthProvider.credential(
+  //     accessToken: googleAuth?.accessToken,
+  //     idToken: googleAuth?.idToken,
+  //   );
+  //
+  //   // Once signed in, return the UserCredential
+  //   FirebaseAuth.instance.signInWithCredential(credential).then((value) async {
+  //
+  //     CacheHelper.saveData(key: 'isGoogleSignIn', value: true).then((value) {
+  //       isGoogleSignIn = true;
+  //     });
+  //
+  //     var deviceToken = await getDeviceToken();
+  //
+  //     FirebaseFirestore.instance.collection('users').doc(value.user?.uid).update({
+  //       'device_token': deviceToken,
+  //     });
+  //
+  //     emit(SuccessLoginWithGoogleAccountState(value.user!.uid));
+  //
+  //   }).catchError((error) {
+  //
+  //     emit(ErrorLoginWithGoogleAccountState(error));
+  //   });
+  // }
 
 
 
@@ -96,6 +96,8 @@ class LoginCubit extends Cubit<LoginStates> {
 
 
   // For the first Time
+
+
   Future<void> signInWithGoogle(context) async {
 
     emit(LoadingLoginWithGoogleAccountState());

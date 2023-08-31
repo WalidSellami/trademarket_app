@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -89,13 +88,7 @@ class AppCubit extends Cubit<AppStates> {
 
             }
 
-
           }
-
-          if (kDebugMode) {
-            print(numberNotice);
-          }
-
 
         }
 
@@ -526,8 +519,8 @@ class AppCubit extends Cubit<AppStates> {
     if(images.isNotEmpty) {
       images.clear();
     }
-    firstCategoryItem = '';
-    firstConditionItem = '';
+    firstCategoryItem = null;
+    firstConditionItem = null;
     emit(SuccessClearDataAppState());
   }
 
@@ -1009,6 +1002,7 @@ class AppCubit extends Cubit<AppStates> {
   List<ProductModel> searchProducts = [];
   List<String> searchIdProducts = [];
 
+
   void searchProduct({
     required String name,
 }) {
@@ -1037,12 +1031,15 @@ class AppCubit extends Cubit<AppStates> {
 
   }
 
+
   void clearSearchAllProducts() {
     searchProducts.clear();
     searchIdProducts.clear();
     emit(SuccessClearDataAppState());
 
   }
+
+
 
 
   UserModel? sellerProfile;
@@ -1113,6 +1110,7 @@ class AppCubit extends Cubit<AppStates> {
       'full_name': fullName,
       'image_profile': imageProfile,
       'uId': id,
+
     }).then((value) {
 
       FirebaseFirestore.instance.collection('users').doc(id).collection('chats').doc(uId).set({
@@ -1356,6 +1354,14 @@ class AppCubit extends Cubit<AppStates> {
 
     });
 
+
+  }
+
+
+  void clearMessages() {
+
+    messages.clear();
+    emit(SuccessClearDataAppState());
 
   }
 

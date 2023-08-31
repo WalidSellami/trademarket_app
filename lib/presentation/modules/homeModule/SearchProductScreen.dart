@@ -180,16 +180,16 @@ class _SearchProductScreenState extends State<SearchProductScreen> {
       child: Row(
         children: [
           CircleAvatar(
-            radius: 26.0,
+            radius: 30.0,
             backgroundColor: ThemeCubit.get(context).isDark ? Colors.white : Colors.black,
             child: CircleAvatar(
-              radius: 25.0,
+              radius: 29.0,
               backgroundColor: Theme.of(context).colorScheme.primary,
               backgroundImage: NetworkImage('${model.images?[0]}'),
             ),
           ),
           const SizedBox(
-            width: 12.0,
+            width: 14.0,
           ),
           Expanded(
             child: Text(

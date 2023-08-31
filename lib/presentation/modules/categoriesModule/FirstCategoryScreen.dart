@@ -2,9 +2,6 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trade_market_app/data/models/productModel/ProductModel.dart';
-import 'package:trade_market_app/presentation/modules/homeModule/ProductDetailsScreen.dart';
-import 'package:trade_market_app/shared/adaptive/anotherCircularLoading/AnotherCircularLoading.dart';
 import 'package:trade_market_app/shared/adaptive/circularLoading/CircularLoading.dart';
 import 'package:trade_market_app/shared/components/Components.dart';
 import 'package:trade_market_app/shared/components/Constants.dart';

@@ -311,7 +311,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       message: 'Google',
                                       enableFeedback: true,
                                       child: defaultIcon(
-                                        radius: 12.0,
+                                        radius: 14.0,
                                         padding: 16.0,
                                         size: 32.0,
                                         icon: EvaIcons.google,
@@ -320,13 +320,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           focusNode1.unfocus();
                                           focusNode2.unfocus();
                                           if(checkCubit.hasInternet) {
-                                            // if(isFirstSignIn == null) {
                                               showLoading(context);
                                               cubit.signInWithGoogle(context);
-                                            // } else {
-                                            //   showLoading(context);
-                                            //   cubit.signInWithGoogleAccount();
-                                            // }
                                           } else {
                                             showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);
                                             alertPress(context);

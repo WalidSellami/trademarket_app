@@ -3,6 +3,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:trade_market_app/data/models/productModel/ProductModel.dart';
 import 'package:trade_market_app/presentation/modules/homeModule/AddProductScreen.dart';
 import 'package:trade_market_app/presentation/modules/homeModule/ProductDetailsScreen.dart';
@@ -27,12 +28,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
 
-  bool isVisible = true;
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  bool isVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -76,17 +74,28 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                             return true;
                           },
-                          child: GridView.builder(
-                            physics: const BouncingScrollPhysics(),
-                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 15.0,
-                                crossAxisSpacing: 15.0,
-                                childAspectRatio: 1.24 / 2,
+                          child: RefreshIndicator(
+                            key: refreshIndicatorKey,
+                            color: Theme.of(context).colorScheme.primary,
+                            backgroundColor: ThemeCubit.get(context).isDark
+                                ? HexColor('181818')
+                                : Colors.white,
+                            strokeWidth: 2.5,
+                            onRefresh: () async {
+                              cubit.getAllProducts();
+                              return Future<void>.delayed(const Duration(seconds: 2));
+                            },
+                            child: GridView.builder(
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing: 15.0,
+                                  crossAxisSpacing: 15.0,
+                                  childAspectRatio: 1.24 / 2,
+                                ),
+                                itemBuilder: (context , index) => buildItemProduct(allProducts[index] , idProducts[index] , numberFavorites),
+                                itemCount: allProducts.length,
                               ),
-                              itemBuilder: (context , index) => buildItemProduct(allProducts[index] , idProducts[index] , numberFavorites),
-                              itemCount: allProducts.length,
-                            ),
+                          ),
                         ),
                         fallback: (context) => (state is LoadingGetAllProductsAppState) ? Center(child: CircularLoading(os: getOs())) :
                          const Center(

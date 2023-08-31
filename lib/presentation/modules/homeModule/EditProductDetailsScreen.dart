@@ -259,7 +259,7 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
                                     height: 250.0,
                                     child: ListView.separated(
                                       scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context , index) => buildItemImageProduct(widget.productModel.images?[index], index, context),
+                                      itemBuilder: (context , index) => buildItemImageProduct(widget.productModel.images?[index], index, index, context),
                                       separatorBuilder: (context , index) => const SizedBox(
                                         width: 12.0,
                                       ),
@@ -303,17 +303,17 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
                           ),
                           if(cubit.images.isNotEmpty)
                             SizedBox(
-                              height: 250.0,
+                              height: 300.0,
                               child: Stack(
                                 alignment: Alignment.bottomRight,
                                 children: [
                                   Align(
                                     alignment: Alignment.center,
                                     child: SizedBox(
-                                      height: 200.0,
+                                      height: 250.0,
                                       child: ListView.separated(
                                         scrollDirection: Axis.horizontal,
-                                        itemBuilder: (context , index) => buildItemImageUpload(cubit.images[index], index, context),
+                                        itemBuilder: (context , index) => buildItemImageUpload(cubit.images[index], index, index, context),
                                         separatorBuilder: (context , index) => const SizedBox(
                                           width: 12.0,
                                         ),
@@ -421,7 +421,6 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
                           const SizedBox(
                             height: 30.0,
                           ),
-                          // if(cubit.images.isNotEmpty)
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 20.0,
@@ -450,6 +449,7 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
                                               productId: widget.productId,
                                               context: context,
                                           );
+
 
                                         } else {
 
@@ -495,7 +495,7 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
     );
   }
 
-  Widget buildItemImageProduct(image , index , context) => Stack(
+  Widget buildItemImageProduct(image , index , currentIndex , context) => Stack(
     alignment: Alignment.topLeft,
     children: [
       GestureDetector(
@@ -561,7 +561,7 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
           radius: 12.0,
           backgroundColor: ThemeCubit.get(context).isDark ? Colors.grey.shade800.withOpacity(.7) : Colors.grey.shade200,
           child: Text(
-            '${++index}',
+            '${++currentIndex}',
             style: TextStyle(
               color: ThemeCubit.get(context).isDark ? Colors.white : Colors.black,
             ),
@@ -572,7 +572,7 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
   );
 
 
-  Widget buildItemImageUpload(XFile image , index , context) => Stack(
+  Widget buildItemImageUpload(XFile image , index , currentIndex ,  context) => Stack(
     alignment: Alignment.bottomCenter,
     children: [
       GestureDetector(
@@ -593,6 +593,16 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
             child: Image.file(File(image.path),
               width: MediaQuery.of(context).size.width / 1.05,
               fit: BoxFit.fitWidth,
+              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                if(frame == null) {
+                  return SizedBox(
+                    height: 250.0,
+                    width: MediaQuery.of(context).size.width / 1.05,
+                    child: Center(child: AnotherCircularLoading(os: getOs())),
+                  );
+                }
+                return child;
+              },
             ),
           ),
         ),
@@ -606,7 +616,7 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
             radius: 12.0,
             backgroundColor: ThemeCubit.get(context).isDark ? Colors.grey.shade800.withOpacity(.7) : Colors.grey.shade200,
             child: Text(
-              '${++index}',
+              '${++currentIndex}',
               style: TextStyle(
                 color: ThemeCubit.get(context).isDark ? Colors.white : Colors.black,
               ),
@@ -622,7 +632,7 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
           child: InkWell(
             borderRadius: BorderRadius.circular(8.0,),
             onTap: () {
-              AppCubit.get(context).clearImage(--index);
+              AppCubit.get(context).clearImage(index);
             },
             child: Container(
               padding: const EdgeInsets.symmetric(

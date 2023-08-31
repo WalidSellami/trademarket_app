@@ -54,6 +54,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 if(state is SuccessSaveAccountAppState) {
 
                   CacheHelper.saveData(key: 'isSavedAccount', value: true).then((value) {
+                    isSavedAccount = true;
                     logOut(context);
                   });
                 }

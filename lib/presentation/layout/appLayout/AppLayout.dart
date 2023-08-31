@@ -120,7 +120,7 @@ class _AppLayoutState extends State<AppLayout> {
                         systemNavigationBarIconBrightness: themeCubit.isDark ? Brightness.dark : Brightness.light,
                       ),
                       actions: [
-                        if(cubit.currentIndex == 0)
+                        if((cubit.currentIndex == 0) && (cubit.allProducts.length > 1))
                          Tooltip(
                            enableFeedback: true,
                            message: 'Search',
