@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:trade_market_app/data/models/messageModel/MessageModel.dart';
 import 'package:trade_market_app/shared/adaptive/anotherCircularLoading/AnotherCircularLoading.dart';
 import 'package:trade_market_app/shared/adaptive/circularLoading/CircularLoading.dart';
@@ -40,6 +41,10 @@ class _UserChatScreenState extends State<UserChatScreen> {
 
   final ScrollController scrollController = ScrollController();
 
+  final SpeechToText speechToText = SpeechToText();
+
+  bool isListen = false;
+
 
   void scrollToBottom() {
     if(scrollController.hasClients) {
@@ -50,6 +55,19 @@ class _UserChatScreenState extends State<UserChatScreen> {
     }
   }
 
+
+  @override
+  void initState() {
+    super.initState();
+    msgController.addListener(() {
+      setState(() {});
+    });
+    if(CheckCubit.get(context).hasInternet) {
+      AppCubit.get(context).getSellerProfile(userId: widget.receiverId);
+    }
+  }
+
+
   @override
   void dispose() {
     scrollController.dispose();
@@ -57,14 +75,6 @@ class _UserChatScreenState extends State<UserChatScreen> {
     super.dispose();
   }
 
-
-  @override
-  void initState() {
-    super.initState();
-    if(CheckCubit.get(context).hasInternet) {
-      AppCubit.get(context).getSellerProfile(userId: widget.receiverId);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +111,9 @@ class _UserChatScreenState extends State<UserChatScreen> {
                   msgController.text = '';
                   setState(() {
                     isVisible = false;
+                    if(isListen) {
+                      isListen = false;
+                    }
                   });
                   if(AppCubit.get(context).messageImage != null) {
                     Navigator.pop(context);
@@ -263,11 +276,54 @@ class _UserChatScreenState extends State<UserChatScreen> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                               vertical: 12.0,
-                              horizontal: 4.0,
+                              horizontal: 8.0,
                             ),
                             child: Row(
                               children: [
-                                IconButton(
+                                if(isListen) const SizedBox(
+                                  width: 4.0,
+                                ),
+                                Material(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  color: (isListen) ?
+                                  ((ThemeCubit.get(context).isDark) ?
+                                  Colors.grey.shade900 : Colors.grey.shade300 ) :
+                                  Theme.of(context).scaffoldBackgroundColor,
+                                  child: IconButton(
+                                    selectedIcon: const Icon(
+                                      Icons.mic_rounded,
+                                    ),
+                                    isSelected: isListen,
+                                    onPressed: () async {
+                                      await vocalSpeech();
+                                    },
+                                    icon: Icon(
+                                      Icons.mic_none_rounded,
+                                      color: Theme.of(context).colorScheme.primary,
+                                    ),
+                                    tooltip: 'Vocal',
+                                    enableFeedback: true,
+                                  ),
+                                ),
+                                if(isListen) const SizedBox(width: 7.0,),
+                                if(isListen && (msgController.text != ''))
+                                  IconButton(
+                                    onPressed: () {
+                                      focusNode.unfocus();
+                                      setState(() {
+                                        msgController.text = '';
+                                        isVisible = false;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.close_rounded,
+                                      color: Theme.of(context).colorScheme.primary,
+                                    ),
+                                    tooltip: 'Clear',
+                                    enableFeedback: true,
+                                  ),
+                                if(!isListen)
+                                  IconButton(
                                     onPressed: () {
                                       focusNode.unfocus();
                                       if(checkCubit.hasInternet) {
@@ -316,12 +372,12 @@ class _UserChatScreenState extends State<UserChatScreen> {
                                       Icons.camera_alt_rounded,
                                       color: Theme.of(context).colorScheme.primary,
                                     ),
-                                  tooltip: 'Image',
-                                  enableFeedback: true,
-                                ),
-                                const SizedBox(
-                                  width: 8.0,
-                                ),
+                                    tooltip: 'Image',
+                                    enableFeedback: true,
+                                  ),
+                                  const SizedBox(
+                                    width: 7.0,
+                                  ),
                                 Expanded(
                                   child: TextFormField(
                                     focusNode: focusNode,
@@ -332,9 +388,9 @@ class _UserChatScreenState extends State<UserChatScreen> {
                                       constraints: const BoxConstraints(
                                         maxHeight: 120.0,
                                       ),
-                                      hintText: 'Write something ...',
+                                      hintText: (isListen) ? 'Say something ...' : 'Write something ...',
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(30.0),
+                                        borderRadius: BorderRadius.circular(26.0),
                                         borderSide: const BorderSide(
                                           width: 2.0,
                                         ),
@@ -423,6 +479,33 @@ class _UserChatScreenState extends State<UserChatScreen> {
         );
       }
     );
+  }
+
+  Future<void> vocalSpeech() async {
+     HapticFeedback.vibrate();
+    if(!isListen) {
+      var available = await speechToText.initialize();
+      setState(() {
+        isListen = true;
+      });
+      if(available) {
+        speechToText.listen(
+          onResult: (result) {
+            setState(() {
+              msgController.text = result.recognizedWords;
+              isVisible = true;
+            });
+          }
+        );
+      }
+    } else {
+      setState(() {
+        msgController.text = '';
+        isListen = false;
+        isVisible = false;
+      });
+      speechToText.stop();
+    }
   }
 
 

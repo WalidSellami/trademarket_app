@@ -54,6 +54,7 @@ dependencies:
   image_gallery_saver: ^2.0.3
   dio: ^5.3.2
   flutter_local_notifications: ^15.1.0+1
+  speech_to_text: ^6.3.0
 
 
   # Firebase

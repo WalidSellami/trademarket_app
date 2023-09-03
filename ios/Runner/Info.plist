@@ -49,5 +49,9 @@
 	<true/>
 	<key>com.apple.security.network.client</key>
     <true/>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>We need access to speech recognition to enable voice commands and dictation for chat functionality in our app.</string>
+    <true/>
+
 </dict>
 </plist>

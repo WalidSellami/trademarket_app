@@ -29,10 +29,6 @@ import 'firebase_options.dart';
 // Notification background
 Future<void> handleBackgroundMessage(RemoteMessage message) async {
 
-  if (kDebugMode) {
-    print(message.data);
-  }
-
   Data data = Data.fromJson(message.data);
 
   if((data.title != null) && (data.message != null)) {
