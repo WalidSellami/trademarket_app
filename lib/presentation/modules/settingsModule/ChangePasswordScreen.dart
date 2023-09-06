@@ -123,7 +123,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 return 'Old Password must be at least 8 characters';
                               }
                               return null;
-                            }),
+                            },
+                            context: context),
                         const SizedBox(
                           height: 30.0,
                         ),
@@ -178,7 +179,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 return 'Enter a strong password with a mix of uppercase letters, lowercase letters, numbers, special characters(@#%&!?), and at least 8 characters';
                               }
                               return null;
-                            }),
+                            },
+                            context: context),
                         const SizedBox(
                           height: 40.0,
                         ),

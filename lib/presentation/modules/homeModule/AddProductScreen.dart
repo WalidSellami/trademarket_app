@@ -43,7 +43,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     if(scrollController.hasClients) {
       scrollController.animateTo(
           scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 400),
+          duration: const Duration(milliseconds: 500),
           curve: Curves.easeIn);
     }
   }
@@ -140,7 +140,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                       return 'Title must not be empty';
                                     }
                                     return null;
-                                  }),
+                                  },
+                                  context: context),
                               const SizedBox(
                                 height: 25.0,
                               ),
@@ -157,7 +158,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                       return 'Price must an integer number (Only numbers)';
                                     }
                                     return null;
-                                  }),
+                                  },
+                                  context: context),
                               const SizedBox(
                                 height: 25.0,
                               ),
@@ -211,7 +213,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                       return 'Enter a valid address --> (without (,-) and without only numbers).';
                                     }
                                     return null;
-                                  }),
+                                  },
+                                  context: context),
                               const SizedBox(
                                 height: 25.0,
                               ),

@@ -146,7 +146,8 @@ class _AccountAccessScreenState extends State<AccountAccessScreen> {
                                 return 'Password must be at least 8 characters';
                               }
                               return null;
-                            }),
+                            },
+                            context: context),
                         const SizedBox(
                           height: 40.0,
                         ),

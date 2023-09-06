@@ -124,6 +124,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 35.0,
                           ),
                           defaultFormField(
+                              isAuth: true,
                               controller: nameController,
                               type: TextInputType.name,
                               label: 'Full Name',
@@ -143,11 +144,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   return 'Enter a valid name --> (without (,-) and without only numbers).';
                                 }
                                 return null;
-                              }),
+                              },
+                              context: context),
                           const SizedBox(
                             height: 30.0,
                           ),
                           defaultFormField(
+                              isAuth: true,
                               label: 'Phone',
                               controller: phoneController,
                               type: TextInputType.phone,
@@ -167,11 +170,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   return 'Phone must be starting with 0';
                                 }
                                 return null;
-                              }),
+                              },
+                              context: context),
                           const SizedBox(
                             height: 30.0,
                           ),
                           defaultFormField(
+                              isAuth: true,
                               label: 'Address',
                               controller: addressController,
                               type: TextInputType.streetAddress,
@@ -188,11 +193,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   return 'Enter a valid address --> (without (,-) and without only numbers).';
                                 }
                                 return null;
-                              }),
+                              },
+                              context: context),
                           const SizedBox(
                             height: 30.0,
                           ),
                           defaultFormField(
+                              isAuth: true,
                               label: 'Email',
                               controller: emailController,
                               type: TextInputType.emailAddress,
@@ -209,11 +216,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   return 'Enter a valid email.';
                                 }
                                 return null;
-                              }),
+                              },
+                              context: context),
                           const SizedBox(
                             height: 30.0,
                           ),
                           defaultFormField(
+                              isAuth: true,
                               label: 'Password',
                               controller: passwordController,
                               isPassword: isPassword,
@@ -262,7 +271,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   return 'Enter a strong password with a mix of uppercase letters, lowercase letters, numbers, special characters(@#%&!?), and at least 8 characters';
                                 }
                                 return null;
-                              }),
+                              },
+                              context: context),
                           const SizedBox(
                             height: 35.0,
                           ),

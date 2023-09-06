@@ -2,6 +2,7 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:trade_market_app/presentation/layout/appLayout/AppLayout.dart';
 import 'package:trade_market_app/presentation/modules/startUpModule/forgotPasswordScreen/ForgotPasswordScreen.dart';
 import 'package:trade_market_app/presentation/modules/startUpModule/registerScreen/RegisterScreen.dart';
@@ -159,7 +160,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     appBar: (isSavedAccount != null) ?
                     defaultAppBar(onPress: () {
                       Navigator.pop(context);
-                    }) : AppBar(),
+                    }) : AppBar(
+                    ),
                     body: Center(
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
@@ -174,6 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   height: 45.0,
                                 ),
                                 defaultFormField(
+                                    isAuth: true,
                                     label: 'Email',
                                     controller: emailController,
                                     type: TextInputType.emailAddress,
@@ -190,11 +193,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                         return 'Enter a valid email.';
                                       }
                                       return null;
-                                    }),
+                                    },
+                                    context: context),
                                 const SizedBox(
                                   height: 30.0,
                                 ),
                                 defaultFormField(
+                                    isAuth: true,
                                     label: 'Password',
                                     controller: passwordController,
                                     type: TextInputType.visiblePassword,
@@ -232,7 +237,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         return 'Password must be at least 8 characters';
                                       }
                                       return null;
-                                    }),
+                                    },
+                                    context: context),
                                 const SizedBox(
                                   height: 8.0,
                                 ),

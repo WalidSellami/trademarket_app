@@ -109,6 +109,7 @@ class _AppLayoutState extends State<AppLayout> {
 
                   },
                   child: Scaffold(
+                    resizeToAvoidBottomInset: false,
                     appBar: AppBar(
                       title: Text(
                         cubit.titles[cubit.currentIndex],

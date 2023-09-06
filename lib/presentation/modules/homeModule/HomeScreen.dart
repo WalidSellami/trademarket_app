@@ -86,6 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               return Future<void>.delayed(const Duration(seconds: 2));
                             },
                             child: GridView.builder(
+                              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   mainAxisSpacing: 15.0,

@@ -108,11 +108,16 @@ class LoginCubit extends Cubit<LoginStates> {
     // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
+    if(googleAuth == null) {
+      emit(ErrorLoginWithGoogleAccountState('Error, Failed to login'));
+    }
+
     // Create a new credential
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
+
 
     // Once signed in, return the UserCredential
     await FirebaseAuth.instance.signInWithCredential(credential).then((value) {

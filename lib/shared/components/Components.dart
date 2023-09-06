@@ -27,7 +27,7 @@ Widget logo(context) => Stack(
     Text(
       'TradeMarket',
       style: TextStyle(
-        fontSize: 36.0,
+        fontSize: 35.0,
         letterSpacing: 0.8,
         color: Theme.of(context).colorScheme.primary,
         fontFamily: 'Kufi',
@@ -35,7 +35,7 @@ Widget logo(context) => Stack(
     ),
     Container(
       width: 80.0,
-      height: 4.0,
+      height: 3.5,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6.0),
         color: Theme.of(context).colorScheme.primary,
@@ -130,6 +130,8 @@ Widget defaultFormField({
   IconData? suffixIcon,
   Function? onPress,
   String? Function(String?) ? onSubmit,
+  bool? isAuth,
+  required BuildContext context,
 
 }) => TextFormField(
   controller: controller,
@@ -142,6 +144,8 @@ Widget defaultFormField({
   decoration: InputDecoration(
     labelText: label,
     errorMaxLines: 3,
+    fillColor: ThemeCubit.get(context).isDark ? firstDarkColor : Colors.blueGrey.shade100.withOpacity(.1),
+    filled: (isAuth == true) ? true : null,
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10.0),
       borderSide: const BorderSide(
@@ -155,7 +159,11 @@ Widget defaultFormField({
     ) : null ): null,
   ),
   validator: validate,
-  onFieldSubmitted: (value) => onSubmit!(value),
+  onFieldSubmitted: (value) {
+    if(value.isNotEmpty) {
+      onSubmit!(value);
+    }
+  },
 );
 
 
@@ -199,7 +207,9 @@ Widget defaultSearchFormField({
   ),
   onChanged: onChange,
   onFieldSubmitted: (value) {
-    onSubmit!(value);
+    if(value.isNotEmpty) {
+      onSubmit!(value);
+    }
   },
 );
 
@@ -331,7 +341,7 @@ Widget defaultIcon({
   required Function onPress,
   required BuildContext context,
 }) =>  Material(
-  color: ThemeCubit.get(context).isDark ? Colors.grey.shade800.withOpacity(.6) : Colors.grey.shade100,
+  color: ThemeCubit.get(context).isDark ? Colors.grey.shade800.withOpacity(.6) :Colors.blueGrey.shade100.withOpacity(.4),
   borderRadius: BorderRadius.circular(radius),
   child: InkWell(
     onTap: () => onPress(),
@@ -421,7 +431,7 @@ dynamic showLoading(context) => showDialog(
             padding: const EdgeInsets.all(26.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(18.0),
-              color: ThemeCubit.get(context).isDark ? HexColor('191919') : Colors.white,
+              color: ThemeCubit.get(context).isDark ? HexColor('202020') : Colors.white,
             ),
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: CircularLoading(os: getOs())),
@@ -559,8 +569,8 @@ dynamic showFullImage(image , String tag , context , {XFile? imageFile}) {
         child: Hero(
           tag: tag,
           child: Container(
-            width: double.infinity,
-            height: 500.0,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
             decoration: const BoxDecoration(),
             child: (imageFile != null) ? Image.file(
                 File(imageFile.path),
@@ -568,8 +578,8 @@ dynamic showFullImage(image , String tag , context , {XFile? imageFile}) {
               frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                 if(frame == null) {
                   return SizedBox(
-                    width: double.infinity,
-                    height: 500.0,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
                     child: Center(child: CircularLoading(os: getOs(),)),
                   );
                 }
@@ -580,8 +590,8 @@ dynamic showFullImage(image , String tag , context , {XFile? imageFile}) {
               frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                 if(frame == null) {
                   return SizedBox(
-                    width: double.infinity,
-                    height: 500.0,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
                     child: Center(child: CircularLoading(os: getOs(),)),
                   );
                 }
@@ -592,15 +602,15 @@ dynamic showFullImage(image , String tag , context , {XFile? imageFile}) {
                   return child;
                 } else {
                   return SizedBox(
-                      width: double.infinity,
-                      height: 500.0,
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
                       child: Center(child: CircularLoading(os: getOs(),)));
                 }
               },
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                    width: double.infinity,
-                    height: 500.0,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
                     decoration: const BoxDecoration(),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: Image.asset('assets/images/mark.jpg'));
@@ -728,8 +738,8 @@ dynamic showFullImageAndSave(globalKey , image , String tag , context , {File? i
           child: Hero(
             tag: tag,
             child: Container(
-              width: double.infinity,
-              height: 500.0,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
               decoration: const BoxDecoration(),
               child: (imageFile != null) ?  Image.file(
                   File(imageFile.path),
@@ -737,8 +747,8 @@ dynamic showFullImageAndSave(globalKey , image , String tag , context , {File? i
                 frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                   if(frame == null) {
                     return SizedBox(
-                      width: double.infinity,
-                      height: 500.0,
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
                       child: Center(child: CircularLoading(os: getOs(),)),
                     );
                   }
@@ -749,8 +759,8 @@ dynamic showFullImageAndSave(globalKey , image , String tag , context , {File? i
                 frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                   if(frame == null) {
                     return SizedBox(
-                      width: double.infinity,
-                      height: 500.0,
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
                       child: Center(child: CircularLoading(os: getOs(),)),
                     );
                   }
@@ -761,15 +771,15 @@ dynamic showFullImageAndSave(globalKey , image , String tag , context , {File? i
                     return child;
                   } else {
                     return SizedBox(
-                        width: double.infinity,
-                        height: 500.0,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
                         child: Center(child: CircularLoading(os: getOs(),)));
                   }
                 },
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
-                    width: double.infinity,
-                      height: 500.0,
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
                       decoration: const BoxDecoration(),
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       child: Image.asset('assets/images/mark.jpg'));

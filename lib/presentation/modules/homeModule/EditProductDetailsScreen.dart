@@ -141,7 +141,8 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
                                         return 'Title must not be empty';
                                       }
                                       return null;
-                                    }),
+                                    },
+                                    context: context),
                                 const SizedBox(
                                   height: 25.0,
                                 ),
@@ -158,7 +159,8 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
                                         return 'Enter a positive integer number';
                                       }
                                       return null;
-                                    }),
+                                    },
+                                    context: context),
                                 const SizedBox(
                                   height: 25.0,
                                 ),
@@ -212,7 +214,8 @@ class _EditProductDetailsScreenState extends State<EditProductDetailsScreen> {
                                         return 'Enter a valid address --> (without (,-) and without only numbers).';
                                       }
                                       return null;
-                                    }),
+                                    },
+                                    context: context),
                                 const SizedBox(
                                   height: 25.0,
                                 ),

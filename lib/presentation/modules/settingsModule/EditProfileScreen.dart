@@ -225,7 +225,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     return 'Enter a valid name --> (without (,-) and without only numbers).';
                                   }
                                   return null;
-                                }),
+                                },
+                                context: context),
                             const SizedBox(
                               height: 30.0,
                             ),
@@ -254,7 +255,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     return 'Phone must be starting with 0';
                                   }
                                   return null;
-                                }),
+                                },
+                                context: context),
                             const SizedBox(
                               height: 30.0,
                             ),
@@ -280,7 +282,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     return 'Enter a valid address --> (without (,-) and without only numbers).';
                                   }
                                   return null;
-                                }),
+                                },
+                                context: context),
                             const SizedBox(
                               height: 40.0,
                             ),

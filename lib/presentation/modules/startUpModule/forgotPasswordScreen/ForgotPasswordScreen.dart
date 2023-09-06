@@ -103,6 +103,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           height: 20.0,
                         ),
                         defaultFormField(
+                            isAuth: true,
                             label: 'Email',
                             controller: emailController,
                             type: TextInputType.emailAddress,
@@ -119,7 +120,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 return 'Enter a valid email.';
                               }
                               return null;
-                            }),
+                            },
+                            context: context),
                         const SizedBox(
                           height: 60.0,
                         ),
