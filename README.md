@@ -1,4 +1,4 @@
-# trade_market
+# Trade_Market
 
 A new Flutter app project ---> For buying, selling, discovering and search for products also there is a chat with sellers and some features.
 
