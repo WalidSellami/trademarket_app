@@ -188,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             clipBehavior: Clip.antiAliasWithSaveLayer,
             child: Image.network('${model?.images?[0]}',
-             fit: BoxFit.fitWidth,
+             fit: BoxFit.cover,
               frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                 if(frame == null) {
                   return SizedBox(

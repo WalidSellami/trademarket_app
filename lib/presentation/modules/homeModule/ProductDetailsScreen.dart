@@ -1,5 +1,6 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:trade_market_app/data/models/productModel/ProductModel.dart';
@@ -522,6 +523,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     return showDialog(
       context: context,
       builder: (dialogContext) {
+        HapticFeedback.vibrate();
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14.0,),

@@ -6,6 +6,7 @@ import 'package:trade_market_app/presentation/modules/categoriesModule/FifthCate
 import 'package:trade_market_app/presentation/modules/categoriesModule/FirstCategoryScreen.dart';
 import 'package:trade_market_app/presentation/modules/categoriesModule/FourthCategoryScreen.dart';
 import 'package:trade_market_app/presentation/modules/categoriesModule/SecondCategoryScreen.dart';
+import 'package:trade_market_app/presentation/modules/categoriesModule/SixCategoryScreen.dart';
 import 'package:trade_market_app/presentation/modules/categoriesModule/ThirdCategoryScreen.dart';
 import 'package:trade_market_app/shared/adaptive/anotherCircularLoading/AnotherCircularLoading.dart';
 import 'package:trade_market_app/shared/components/Components.dart';
@@ -27,12 +28,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   List<CategoriesModel> items = [
     CategoriesModel(
-    name: 'Home & Garden',
-    image: 'https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=',
-   ),
-    CategoriesModel(
-      name: 'Entertainment',
-      image: 'https://img.freepik.com/premium-photo/two-video-game-controllers-joysticks-game-console-isolated-black-background-gamer-controlling-devices-closeup_154092-17958.jpg',
+      name: 'Assorted Goods',
+      image: 'https://images.pexels.com/photos/6608038/pexels-photo-6608038.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     ),
     CategoriesModel(
       name: 'Clothing & Accessories',
@@ -42,6 +39,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       name: 'Electronics',
       image: 'https://img.freepik.com/premium-photo/electronic-gadgets-black-concrete-background-concept-accessories-successful-business-flat-lay_76255-466.jpg',
     ),
+    CategoriesModel(
+      name: 'Entertainment',
+      image: 'https://img.freepik.com/premium-photo/two-video-game-controllers-joysticks-game-console-isolated-black-background-gamer-controlling-devices-closeup_154092-17958.jpg',
+    ),
+    CategoriesModel(
+    name: 'Home & Garden',
+    image: 'https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=',
+   ),
+
     CategoriesModel(
       name: 'Vehicles',
       image: 'https://img.freepik.com/premium-vector/vehicles-set-bicycle-bike-car-bus_665045-404.jpg?w=2000',
@@ -113,8 +119,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           Navigator.of(context).push(createSecondRoute(screen: const ThirdCategoryScreen()));
         } else if(index == 3) {
           Navigator.of(context).push(createSecondRoute(screen: const FourthCategoryScreen()));
-        } else  {
+        } else if(index == 4) {
           Navigator.of(context).push(createSecondRoute(screen: const FifthCategoryScreen()));
+        } else {
+          Navigator.of(context).push(createSecondRoute(screen: const SixCategoryScreen()));
         }
       } else {
         showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);

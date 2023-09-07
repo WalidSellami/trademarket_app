@@ -12,8 +12,8 @@ import 'package:trade_market_app/shared/cubit/checkCubit/CheckStates.dart';
 import 'package:trade_market_app/shared/cubit/themeCubit/ThemeCubit.dart';
 import 'package:trade_market_app/shared/cubit/themeCubit/ThemeStates.dart';
 
-class FirstCategoryScreen extends StatelessWidget {
-  const FirstCategoryScreen({super.key});
+class SixCategoryScreen extends StatelessWidget {
+  const SixCategoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,30 +37,30 @@ class FirstCategoryScreen extends StatelessWidget {
                     builder: (context, state) {
 
                       var cubit = AppCubit.get(context);
-                      var products = cubit.firstCategory;
-                      var idProducts = cubit.idFirstCategory;
+                      var products = cubit.sixCategory;
+                      var idProducts = cubit.idSixCategory;
                       var numberFavorites = cubit.numberFavorites;
 
                       return Scaffold(
                         appBar: defaultAppBar(
-                            onPress: () {
-                              Navigator.pop(context);
-                            },
-                            title: 'Assorted Goods',
+                          onPress: () {
+                            Navigator.pop(context);
+                          },
+                          title: 'Vehicles',
                         ),
                         body: (checkCubit.hasInternet) ? ConditionalBuilder(
                           condition: products.isNotEmpty,
                           builder: (context) => GridView.builder(
                             physics: const BouncingScrollPhysics(),
-                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 15.0,
-                                crossAxisSpacing: 15.0,
-                                childAspectRatio: 1.24 / 2,
-                              ),
-                              itemBuilder: (context , index) => buildItemCategoryProduct(products[index] , idProducts[index] , numberFavorites , context),
-                              itemCount: products.length,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 15.0,
+                              crossAxisSpacing: 15.0,
+                              childAspectRatio: 1.24 / 2,
                             ),
+                            itemBuilder: (context , index) => buildItemCategoryProduct(products[index] , idProducts[index] , numberFavorites , context),
+                            itemCount: products.length,
+                          ),
                           fallback: (context) => (state is LoadingGetAllProductsAppState) ? Center(child: CircularLoading(os: getOs())) :
                           const Center(
                             child: Text(

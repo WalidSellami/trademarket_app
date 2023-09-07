@@ -457,10 +457,11 @@ class AppCubit extends Cubit<AppStates> {
   String? firstConditionItem;
 
   List<String> categories = [
-    'Home & Garden',
-    'Entertainment',
+    'Assorted Goods',
     'Clothing & Accessories',
     'Electronics',
+    'Entertainments',
+    'Homes & Gardens',
     'Vehicles',
   ];
 
@@ -660,6 +661,9 @@ class AppCubit extends Cubit<AppStates> {
   List<ProductModel> fifthCategory = [];
   List<String> idFifthCategory = [];
 
+  List<ProductModel> sixCategory = [];
+  List<String> idSixCategory = [];
+
 
   void getAllProducts() {
 
@@ -692,6 +696,9 @@ class AppCubit extends Cubit<AppStates> {
       fifthCategory = [];
       idFifthCategory = [];
 
+      sixCategory = [];
+      idSixCategory = [];
+
       for(var element in value.docs) {
 
         idProducts.add(element.id);
@@ -713,30 +720,35 @@ class AppCubit extends Cubit<AppStates> {
         }
 
 
-        if(element.data()['category'] == 'Home & Garden') {
+        if(element.data()['category'] == 'Assorted Goods') {
 
           idFirstCategory.add(element.id);
           firstCategory.add(ProductModel.fromJson(element.data()));
 
-        } else if(element.data()['category'] == 'Entertainment') {
+        } else if(element.data()['category'] == 'Clothing & Accessories') {
 
           idSecondCategory.add(element.id);
           secondCategory.add(ProductModel.fromJson(element.data()));
 
-        } else if(element.data()['category'] == 'Clothing & Accessories') {
+        } else if(element.data()['category'] == 'Electronics') {
 
           idThirdCategory.add(element.id);
           thirdCategory.add(ProductModel.fromJson(element.data()));
 
-        } else if(element.data()['category'] == 'Electronics') {
+        } else if(element.data()['category'] == 'Entertainments') {
 
           idFourthCategory.add(element.id);
           fourthCategory.add(ProductModel.fromJson(element.data()));
 
-        } else if(element.data()['category'] == 'Vehicles') {
+        } else if(element.data()['category'] == 'Homes & Gardens') {
 
           idFifthCategory.add(element.id);
           fifthCategory.add(ProductModel.fromJson(element.data()));
+
+        } else if(element.data()['category'] == 'Vehicles') {
+
+          idSixCategory.add(element.id);
+          sixCategory.add(ProductModel.fromJson(element.data()));
 
         }
 

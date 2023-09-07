@@ -46,7 +46,7 @@ class SecondCategoryScreen extends StatelessWidget {
                           onPress: () {
                             Navigator.pop(context);
                           },
-                          title: 'Entertainment',
+                          title: 'Clothing & Accessories',
                         ),
                         body: (checkCubit.hasInternet) ? ConditionalBuilder(
                           condition: products.isNotEmpty,

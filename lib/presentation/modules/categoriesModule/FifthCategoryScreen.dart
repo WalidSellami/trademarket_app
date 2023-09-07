@@ -46,7 +46,7 @@ class FifthCategoryScreen extends StatelessWidget {
                           onPress: () {
                             Navigator.pop(context);
                           },
-                          title: 'Vehicles',
+                          title: 'Homes & Gardens',
                         ),
                         body: (checkCubit.hasInternet) ? ConditionalBuilder(
                           condition: products.isNotEmpty,

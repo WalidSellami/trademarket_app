@@ -46,7 +46,7 @@ class FourthCategoryScreen extends StatelessWidget {
                           onPress: () {
                             Navigator.pop(context);
                           },
-                          title: 'Electronics',
+                          title: 'Entertainments',
                         ),
                         body: (checkCubit.hasInternet) ? ConditionalBuilder(
                           condition: products.isNotEmpty,
