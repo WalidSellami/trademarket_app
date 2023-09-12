@@ -1,6 +1,7 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trade_market_app/presentation/modules/settingsModule/ChangePasswordScreen.dart';
 import 'package:trade_market_app/presentation/modules/settingsModule/EditProfileScreen.dart';
@@ -357,7 +358,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               borderRadius: BorderRadius.circular(4.0,),
                             ),
                             onTap: () {
-                              showAlertLogOut(context , userProfile?.fullName , userProfile?.email , userProfile?.imageProfile);
+                                showAlertLogOut(context , userProfile?.fullName , userProfile?.email , userProfile?.imageProfile);
                             },
                             leading: Container(
                               padding: const EdgeInsets.all(8.0),
@@ -431,6 +432,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return showDialog(
       context: context,
       builder: (dialogContext) {
+        HapticFeedback.vibrate();
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14.0,),

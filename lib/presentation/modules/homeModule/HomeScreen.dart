@@ -220,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: Image.asset('assets/images/mark.jpg',
-                     fit: BoxFit.fitWidth,
+                     fit: BoxFit.cover,
                     ));
               },
             ),

@@ -11,7 +11,8 @@ class LoadingLoginState extends LoginStates {}
 class SuccessLoginState extends LoginStates {
 
   final String uId;
-  SuccessLoginState(this.uId);
+  final bool isEmailVerified;
+  SuccessLoginState(this.uId, this.isEmailVerified);
 
 }
 

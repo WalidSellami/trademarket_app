@@ -71,3 +71,5 @@ class ErrorRemoveAccountRegisterState extends RegisterStates {
   ErrorRemoveAccountRegisterState(this.error);
 
 }
+
+

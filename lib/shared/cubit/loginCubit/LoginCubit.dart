@@ -36,7 +36,7 @@ class LoginCubit extends Cubit<LoginStates> {
           'device_token': deviceToken,
         });
 
-        emit(SuccessLoginState(value.user!.uid));
+        emit(SuccessLoginState(value.user!.uid, value.user!.emailVerified));
 
     }).catchError((error) {
 
@@ -108,9 +108,9 @@ class LoginCubit extends Cubit<LoginStates> {
     // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
-    if(googleAuth == null) {
-      emit(ErrorLoginWithGoogleAccountState('Error, Failed to login'));
-    }
+    // if(googleAuth == null) {
+    //   emit(ErrorLoginWithGoogleAccountState('Error, Failed to login'));
+    // }
 
     // Create a new credential
     final credential = GoogleAuthProvider.credential(

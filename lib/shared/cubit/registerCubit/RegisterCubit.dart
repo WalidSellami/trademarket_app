@@ -87,7 +87,6 @@ class RegisterCubit extends Cubit<RegisterStates> {
   }
 
 
-
   void sendEmailVerification() {
 
     emit(LoadingSendEmailVerificationRegisterState());
@@ -98,7 +97,6 @@ class RegisterCubit extends Cubit<RegisterStates> {
 
     }).catchError((error) {
 
-
       emit(ErrorSendEmailVerificationRegisterState(error));
 
     });
@@ -107,7 +105,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
   }
 
 
-  bool isVisible = false;
+  bool isVerified = false;
 
   void autoVerifyEmail() {
 
@@ -119,15 +117,19 @@ class RegisterCubit extends Cubit<RegisterStates> {
 
         if(event!.emailVerified) {
 
-          isVisible = true;
+          isVerified = true;
 
         } else {
 
-          isVisible = false;
+          isVerified = false;
 
         }
 
         emit(SuccessAutoVerificationRegisterState());
+
+        if (kDebugMode) {
+          print(isVerified);
+        }
 
       });
 

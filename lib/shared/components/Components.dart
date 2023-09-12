@@ -11,12 +11,15 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:trade_market_app/data/models/productModel/ProductModel.dart';
 import 'package:trade_market_app/presentation/modules/homeModule/ProductDetailsScreen.dart';
+import 'package:trade_market_app/presentation/modules/startUpModule/loginScreen/LoginScreen.dart';
 import 'package:trade_market_app/shared/adaptive/anotherCircularLoading/AnotherCircularLoading.dart';
 import 'package:trade_market_app/shared/adaptive/circularLoading/CircularLoading.dart';
 import 'package:trade_market_app/shared/components/Constants.dart';
 import 'package:trade_market_app/shared/cubit/appCubit/AppCubit.dart';
 import 'package:trade_market_app/shared/cubit/checkCubit/CheckCubit.dart';
+import 'package:trade_market_app/shared/cubit/registerCubit/RegisterCubit.dart';
 import 'package:trade_market_app/shared/cubit/themeCubit/ThemeCubit.dart';
+import 'package:trade_market_app/shared/network/local/CacheHelper.dart';
 import 'package:trade_market_app/shared/styles/Styles.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 
@@ -408,7 +411,7 @@ Color chooseToastColor({
   return switch(s) {
 
     ToastStates.success => greenColor,
-    ToastStates.warning => Colors.amber.shade800,
+    ToastStates.warning => Colors.amber.shade900,
     ToastStates.error => Colors.red,
 
   };
@@ -439,6 +442,68 @@ dynamic showLoading(context) => showDialog(
     );
   },
 );
+
+
+void removeAccount(context) {
+  CacheHelper.removeData(key: 'uId').then((value) {
+    if(value == true) {
+      RegisterCubit.get(context).deleteAccount();
+    }
+  });
+}
+
+dynamic showAlertVerification(BuildContext context) {
+  return showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) {
+      return WillPopScope(
+        onWillPop: () async {
+          return false;
+        },
+        child: AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              14.0,
+            ),
+          ),
+          title: Text(
+            'Time is up!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20.0,
+              color: redColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: const Text(
+            'Your email is not verified.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 17.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                navigateAndNotReturn(
+                    context: context, screen: const LoginScreen());
+              },
+              child: const Text(
+                'Ok',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
 
 
 dynamic showAlertExit(BuildContext context) {
@@ -830,7 +895,7 @@ Widget buildItemCategoryProduct(ProductModel? model , productId , numberFavorite
           ),
           clipBehavior: Clip.antiAliasWithSaveLayer,
           child: Image.network('${model?.images?[0]}',
-            fit: BoxFit.fitWidth,
+            fit: BoxFit.cover,
             frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
               if(frame == null) {
                 return SizedBox(
@@ -862,7 +927,7 @@ Widget buildItemCategoryProduct(ProductModel? model , productId , numberFavorite
                   ),
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   child: Image.asset('assets/images/mark.jpg',
-                    fit: BoxFit.fitWidth,
+                    fit: BoxFit.cover,
                   ));
             },
           ),

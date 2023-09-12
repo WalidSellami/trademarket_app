@@ -74,7 +74,7 @@ class AppCubit extends Cubit<AppStates> {
 
       numberNotice = 0;
 
-      if(value.data() != null) {
+      if((value.data() != null) && (value.data()?['uId'] == uId)) {
 
         userProfile = UserModel.fromJson(value.data()!);
 

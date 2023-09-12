@@ -1,9 +1,10 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:trade_market_app/presentation/layout/appLayout/AppLayout.dart';
+import 'package:trade_market_app/presentation/modules/startUpModule/emailVerficationScreen/EmailVerificationScreen.dart';
 import 'package:trade_market_app/presentation/modules/startUpModule/forgotPasswordScreen/ForgotPasswordScreen.dart';
 import 'package:trade_market_app/presentation/modules/startUpModule/registerScreen/RegisterScreen.dart';
 import 'package:trade_market_app/shared/adaptive/circularLoading/CircularLoading.dart';
@@ -13,6 +14,7 @@ import 'package:trade_market_app/shared/cubit/checkCubit/CheckCubit.dart';
 import 'package:trade_market_app/shared/cubit/checkCubit/CheckStates.dart';
 import 'package:trade_market_app/shared/cubit/loginCubit/LoginCubit.dart';
 import 'package:trade_market_app/shared/cubit/loginCubit/LoginStates.dart';
+import 'package:trade_market_app/shared/cubit/registerCubit/RegisterCubit.dart';
 import 'package:trade_market_app/shared/cubit/themeCubit/ThemeCubit.dart';
 import 'package:trade_market_app/shared/cubit/themeCubit/ThemeStates.dart';
 import 'package:trade_market_app/shared/network/local/CacheHelper.dart';
@@ -55,6 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
     isSavedAccount = CacheHelper.getData(key: 'isSavedAccount');
   }
 
+
   @override
   void dispose() {
     emailController.dispose();
@@ -79,15 +82,28 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 if(state is SuccessLoginState) {
 
-                  showFlutterToast(message: 'Login done successfully', state: ToastStates.success, context: context);
+                    if(state.isEmailVerified == true) {
 
-                  CacheHelper.saveData(key: 'uId', value: state.uId).then((value) {
+                      showFlutterToast(message: 'Login done successfully', state: ToastStates.success, context: context);
 
-                    uId = state.uId;
+                      CacheHelper.saveData(key: 'uId', value: state.uId).then((value) {
 
-                    navigateAndNotReturn(context: context, screen: const AppLayout());
+                        uId = state.uId;
 
-                  });
+                      });
+
+                      navigateAndNotReturn(context: context, screen: const AppLayout());
+
+                    } else {
+
+                      showFlutterToast(message: 'Your Email is not verified', state: ToastStates.warning, context: context);
+
+                      RegisterCubit.get(context).sendEmailVerification();
+
+                      navigateAndNotReturn(context: context, screen: EmailVerificationScreen(userId: state.uId,));
+                    }
+
+
 
                 }
 

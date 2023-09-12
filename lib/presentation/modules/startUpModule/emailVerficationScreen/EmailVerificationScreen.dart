@@ -4,7 +4,6 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trade_market_app/presentation/layout/appLayout/AppLayout.dart';
-import 'package:trade_market_app/presentation/modules/startUpModule/loginScreen/LoginScreen.dart';
 import 'package:trade_market_app/shared/adaptive/circularLoading/CircularLoading.dart';
 import 'package:trade_market_app/shared/components/Components.dart';
 import 'package:trade_market_app/shared/components/Constants.dart';
@@ -16,7 +15,10 @@ import 'package:trade_market_app/shared/network/local/CacheHelper.dart';
 import 'package:trade_market_app/shared/styles/Styles.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
-  const EmailVerificationScreen({super.key});
+
+  final String userId;
+
+  const EmailVerificationScreen({super.key, required this.userId});
 
   @override
   State<EmailVerificationScreen> createState() =>
@@ -24,6 +26,7 @@ class EmailVerificationScreen extends StatefulWidget {
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
+
   int seconds = 300;
 
   int sec = 60;
@@ -42,11 +45,11 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         });
       } else {
         timer.cancel();
-        removeAccount();
+        removeAccount(context);
         showAlertVerification(context);
       }
 
-      if (RegisterCubit.get(context).isVisible) {
+      if (RegisterCubit.get(context).isVerified) {
         timer.cancel();
       }
 
@@ -74,12 +77,13 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         timer.cancel();
       }
 
-      if (RegisterCubit.get(context).isVisible) {
+      if (RegisterCubit.get(context).isVerified) {
         timer.cancel();
       }
 
     });
   }
+
 
   @override
   void initState() {
@@ -111,117 +115,35 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
             builder: (context, state) {
               var cubit = RegisterCubit.get(context);
 
-              return Scaffold(
-                appBar: AppBar(
-                  title: const Text(
-                    'Email Verification',
+              return WillPopScope(
+                onWillPop: () async {
+
+                  showFlutterToast(message: 'Complete your verification!', state: ToastStates.error, context: context);
+                  return false;
+
+                },
+                child: Scaffold(
+                  appBar: AppBar(
+                    title: const Text(
+                      'Email Verification',
+                    ),
                   ),
-                ),
-                body: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: (!cubit.isVisible)
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              EvaIcons.emailOutline,
-                              size: 60.0,
-                            ),
-                            const SizedBox(
-                              height: 40.0,
-                            ),
-                            const Text(
-                              'Check Your Email',
-                              style: TextStyle(
-                                fontSize: 26.0,
-                                letterSpacing: 0.8,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 30.0,
-                            ),
-                            Text.rich(
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 19.0,
-                                letterSpacing: 0.8,
-                                height: 1.4,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              TextSpan(
-                                  text:
-                                      'We sent a verification link to your email, verify it to continue.\n\n',
-                                  children: [
-                                    TextSpan(
-                                      text:
-                                          'If you don\'t verify your email in 5 minutes, your account will be deleted.',
-                                      style: TextStyle(
-                                        color: redColor,
-                                      ),
-                                    ),
-                                  ]),
-                            ),
-                            const SizedBox(
-                              height: 30.0,
-                            ),
-                            (sec > 0)
-                                ? Text(
-                                    '$sec',
-                                    style: TextStyle(
-                                      fontSize: 16.5,
-                                      color: (sec > 10)
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                          : redColor,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )
-                                : ConditionalBuilder(
-                                    condition: state
-                                        is! LoadingSendEmailVerificationRegisterState,
-                                    builder: (context) => defaultTextButton(
-                                      text: 'Resend-Link',
-                                      onPress: () {
-                                        if (checkCubit.hasInternet) {
-                                          cubit.sendEmailVerification();
-                                          Future.delayed(
-                                                  const Duration(seconds: 1))
-                                              .then((value) {
-                                            setState(() {
-                                              sec = 60;
-                                            });
-                                            startTime();
-                                          });
-                                        } else {
-                                          showFlutterToast(
-                                              message:
-                                                  'No Internet Connection',
-                                              state: ToastStates.error,
-                                              context: context);
-                                        }
-                                      },
-                                    ),
-                                    fallback: (context) =>
-                                        CircularLoading(os: getOs()),
-                                  ),
-                          ],
-                        )
-                      : Center(
-                        child: Column(
+                  body: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: (!cubit.isVerified)
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Icon(
-                                EvaIcons.checkmarkSquare2Outline,
+                                EvaIcons.emailOutline,
                                 size: 60.0,
                               ),
                               const SizedBox(
-                                height: 30.0,
+                                height: 40.0,
                               ),
                               const Text(
-                                'Email Verified',
+                                'Check Your Email',
                                 style: TextStyle(
                                   fontSize: 26.0,
                                   letterSpacing: 0.8,
@@ -229,26 +151,119 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                                 ),
                               ),
                               const SizedBox(
-                                height: 45.0,
+                                height: 30.0,
                               ),
-                              (!isLoading) ? defaultSecondButton(
-                                  text: 'Continue',
-                                  onPress: () {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    Future.delayed(const Duration(milliseconds: 1500)).then((value) {
-                                      setState(() {
-                                        isLoading = false;
-                                      });
-                                      showFlutterToast(message: 'Done with success', state: ToastStates.success, context: context);
-                                      navigateAndNotReturn(context: context, screen: const AppLayout());
-                                    });
-                                  },
-                                  context: context) : CircularLoading(os: getOs()),
+                              Text.rich(
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 19.0,
+                                  letterSpacing: 0.8,
+                                  height: 1.4,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                TextSpan(
+                                    text:
+                                        'We sent a verification link to your email, verify it to continue.\n\n',
+                                    children: [
+                                      TextSpan(
+                                        text:
+                                            'If you don\'t verify your email in 5 minutes, your account will be deleted.',
+                                        style: TextStyle(
+                                          color: redColor,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+                              const SizedBox(
+                                height: 30.0,
+                              ),
+                              (sec > 0)
+                                  ? Text(
+                                      '$sec',
+                                      style: TextStyle(
+                                        fontSize: 16.5,
+                                        color: (sec > 10)
+                                            ? Theme.of(context)
+                                                .colorScheme
+                                                .primary
+                                            : redColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                  : ConditionalBuilder(
+                                      condition: state
+                                          is! LoadingSendEmailVerificationRegisterState,
+                                      builder: (context) => defaultTextButton(
+                                        text: 'Resend-Link',
+                                        onPress: () {
+                                          if (checkCubit.hasInternet) {
+                                            cubit.sendEmailVerification();
+                                            Future.delayed(
+                                                    const Duration(seconds: 1))
+                                                .then((value) {
+                                              setState(() {
+                                                sec = 60;
+                                              });
+                                              startTime();
+                                            });
+                                          } else {
+                                            showFlutterToast(
+                                                message:
+                                                    'No Internet Connection',
+                                                state: ToastStates.error,
+                                                context: context);
+                                          }
+                                        },
+                                      ),
+                                      fallback: (context) =>
+                                          CircularLoading(os: getOs()),
+                                    ),
                             ],
-                          ),
-                      ),
+                          )
+                        : Center(
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  EvaIcons.checkmarkSquare2Outline,
+                                  size: 60.0,
+                                ),
+                                const SizedBox(
+                                  height: 30.0,
+                                ),
+                                const Text(
+                                  'Email Verified',
+                                  style: TextStyle(
+                                    fontSize: 26.0,
+                                    letterSpacing: 0.8,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 45.0,
+                                ),
+                                (!isLoading) ? defaultSecondButton(
+                                    text: 'Continue',
+                                    onPress: () {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      Future.delayed(const Duration(milliseconds: 1500)).then((value) {
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                        CacheHelper.saveData(key: 'uId', value: widget.userId).then((value) {
+                                          uId = widget.userId;
+                                        });
+                                        showFlutterToast(message: 'Done with success', state: ToastStates.success, context: context);
+                                        navigateAndNotReturn(context: context, screen: const AppLayout());
+                                      });
+                                    },
+                                    context: context) : CircularLoading(os: getOs()),
+                              ],
+                            ),
+                        ),
+                  ),
                 ),
               );
             },
@@ -258,64 +273,5 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     });
   }
 
-  void removeAccount() {
-    CacheHelper.removeData(key: 'uId').then((value) {
-      if(value == true) {
-        RegisterCubit.get(context).deleteAccount();
-      }
-    });
-  }
 
-  dynamic showAlertVerification(BuildContext context) {
-    return showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return WillPopScope(
-          onWillPop: () async {
-            return false;
-          },
-          child: AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                14.0,
-              ),
-            ),
-            title: Text(
-              'Time is up!',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 20.0,
-                color: redColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            content: const Text(
-              'Your email is not verified.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 17.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  navigateAndNotReturn(
-                      context: context, screen: const LoginScreen());
-                },
-                child: const Text(
-                  'Ok',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 }

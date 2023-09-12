@@ -10,7 +10,6 @@ import 'package:trade_market_app/shared/cubit/checkCubit/CheckCubit.dart';
 import 'package:trade_market_app/shared/cubit/checkCubit/CheckStates.dart';
 import 'package:trade_market_app/shared/cubit/registerCubit/RegisterCubit.dart';
 import 'package:trade_market_app/shared/cubit/registerCubit/RegisterStates.dart';
-import 'package:trade_market_app/shared/network/local/CacheHelper.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -67,15 +66,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               showFlutterToast(message: 'Register done successfully', state: ToastStates.success, context: context);
 
-              CacheHelper.saveData(key: 'uId', value: state.userModel.uId).then((value) {
+              RegisterCubit.get(context).sendEmailVerification();
 
-                uId = state.userModel.uId;
-
-                RegisterCubit.get(context).sendEmailVerification();
-
-                navigateAndNotReturn(context: context, screen: const EmailVerificationScreen());
-
-              });
+              navigateAndNotReturn(context: context, screen: EmailVerificationScreen(userId: state.userModel.uId.toString(),));
 
             }
 
