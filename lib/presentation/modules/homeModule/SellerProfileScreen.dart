@@ -37,7 +37,7 @@ class SellerProfileScreen extends StatelessWidget {
                 title: sellerProfile?.fullName ?? '',
               ),
               body: (checkCubit.hasInternet) ? ConditionalBuilder(
-                condition: state is! LoadingGetSellerProfileAppState,
+                condition: ((state is! LoadingGetSellerProfileAppState) && (sellerProfile != null)),
                 builder: (context) => SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
                     child: Padding(

@@ -9,6 +9,7 @@ class UserModel {
   Map<String , dynamic>? senders;
   String? deviceToken;
   bool? isInfoComplete;
+  bool? isEmailVerified;
 
   UserModel({
     this.fullName,
@@ -20,6 +21,7 @@ class UserModel {
     this.senders,
     this.deviceToken,
     this.isInfoComplete,
+    this.isEmailVerified,
   });
 
 
@@ -34,6 +36,7 @@ class UserModel {
     senders = json['senders'];
     deviceToken = json['device_token'];
     isInfoComplete = json['is_info_complete'];
+    isEmailVerified = json['is_email_verified'];
 
   }
 
@@ -51,6 +54,7 @@ class UserModel {
       'senders': senders,
       'device_token': deviceToken,
       'is_info_complete': isInfoComplete,
+      'is_email_verified': isEmailVerified,
     };
 
   }

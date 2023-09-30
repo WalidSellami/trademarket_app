@@ -377,6 +377,10 @@ defaultAppBar({
   titleSpacing: 5.0,
   title: Text(
      title ?? '',
+     maxLines: 1,
+    style: const TextStyle(
+      overflow: TextOverflow.ellipsis,
+    ),
   ),
   actions: actions,
 );
@@ -446,11 +450,11 @@ dynamic showLoading(context) => showDialog(
 
 void removeAccount(context) {
   CacheHelper.removeData(key: 'uId').then((value) {
-    if(value == true) {
-      RegisterCubit.get(context).deleteAccount();
-    }
+    uId = null;
   });
+  RegisterCubit.get(context).deleteAccount();
 }
+
 
 dynamic showAlertVerification(BuildContext context) {
   return showDialog(
@@ -464,7 +468,7 @@ dynamic showAlertVerification(BuildContext context) {
         child: AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
-              14.0,
+              16.0,
             ),
           ),
           title: Text(
@@ -477,7 +481,7 @@ dynamic showAlertVerification(BuildContext context) {
             ),
           ),
           content: const Text(
-            'Your email is not verified.',
+            'You did not verify your email on specified time.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 17.0,
@@ -512,7 +516,7 @@ dynamic showAlertExit(BuildContext context) {
     builder: (context) {
       return AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14.0,),
+          borderRadius: BorderRadius.circular(16.0,),
         ),
         title: const Text(
           'Do you want to exit ?',
@@ -566,7 +570,7 @@ dynamic showAlertCheckConnection(BuildContext context , {bool isSplashScreen = f
         },
         child: AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14.0,),
+            borderRadius: BorderRadius.circular(16.0,),
           ),
           title: const Text(
             'No Internet Connection',
@@ -678,7 +682,9 @@ dynamic showFullImage(image , String tag , context , {XFile? imageFile}) {
                     height: MediaQuery.of(context).size.height,
                     decoration: const BoxDecoration(),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: Image.asset('assets/images/mark.jpg'));
+                    child: Image.asset('assets/images/mark.jpg',
+                      fit: BoxFit.fitWidth,
+                    ));
               },
             ),
   ),
@@ -705,7 +711,7 @@ Future<void> saveImage(GlobalKey globalKey , context) async {
 
     Uint8List? imageBytes = byteData?.buffer.asUint8List();
 
-    ImageGallerySaver.saveImage(imageBytes!);
+    await ImageGallerySaver.saveImage(imageBytes!);
 
 
   });
@@ -725,17 +731,22 @@ dynamic showFullImageAndSave(globalKey , image , String tag , context , {File? i
       actions: [
         (isMyPhotos == false) ? IconButton(
             onPressed: () async {
-              await saveImage(globalKey, context).then((value) {
-                showFlutterToast(message: 'The image has been saved to your gallery', state: ToastStates.success, context: context);
-                Navigator.pop(context);
-              }).catchError((error) {
-                showFlutterToast(message: error.toString(),state: ToastStates.error, context: context);
+              if(CheckCubit.get(context).hasInternet) {
+                await saveImage(globalKey, context).then((value) {
+                  showFlutterToast(message: 'The image has been saved to your gallery', state: ToastStates.success, context: context);
+                  Navigator.pop(context);
+                }).catchError((error) {
+                  showFlutterToast(message: error.toString(),state: ToastStates.error, context: context);
                 });
+              } else {
+                showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);
+              }
             },
             icon: Icon(
               EvaIcons.downloadOutline,
               color: Theme.of(context).colorScheme.primary,
             ),
+          tooltip: 'Save',
         ) :
          PopupMenuButton(
              itemBuilder: (context) {
@@ -777,20 +788,23 @@ dynamic showFullImageAndSave(globalKey , image , String tag , context , {File? i
                 ];
              },
            onSelected: (value) async {
-             if(value == 'save') {
-               await saveImage(globalKey , context).then((value) {
-                 Navigator.pop(context);
-                 showFlutterToast(message: 'The image has been saved to your gallery', state: ToastStates.success, context: context);
-               }).catchError((error) {
-                 showFlutterToast(message: '$error', state: ToastStates.error, context: context);
-               });
-             } else if( value == 'remove') {
-               AppCubit.get(context).removeImageProfileUploaded(image: image, context: context);
-               Navigator.pop(context);
-             }
+               if(CheckCubit.get(context).hasInternet) {
+                 if(value == 'save') {
+                   await saveImage(globalKey , context).then((value) {
+                     Navigator.pop(context);
+                     showFlutterToast(message: 'The image has been saved to your gallery', state: ToastStates.success, context: context);
+                   }).catchError((error) {
+                     showFlutterToast(message: '$error', state: ToastStates.error, context: context);
+                   });
+                 } else if( value == 'remove') {
+                   AppCubit.get(context).removeImageProfileUploaded(image: image, context: context);
+                   Navigator.pop(context);
+                 }
+               } else {
+                showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);
+               }
            },
          ),
-
       ],
     ),
     body: Center(
@@ -847,7 +861,9 @@ dynamic showFullImageAndSave(globalKey , image , String tag , context , {File? i
                       height: MediaQuery.of(context).size.height,
                       decoration: const BoxDecoration(),
                       clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: Image.asset('assets/images/mark.jpg'));
+                      child: Image.asset('assets/images/mark.jpg',
+                        fit: BoxFit.fitWidth,
+                      ));
                 },
             ),
   ),
@@ -984,13 +1000,14 @@ Widget buildItemCategoryProduct(ProductModel? model , productId , numberFavorite
                       child: InkWell(
                         borderRadius: BorderRadius.circular(16.0),
                         onTap: () {
-                          if(model?.favorites?[uId] == false || model?.favorites?[uId] == null) {
-
-                            AppCubit.get(context).addProductFavorite(productId: productId);
-
+                          if(CheckCubit.get(context).hasInternet) {
+                            if(model?.favorites?[uId] == false || model?.favorites?[uId] == null) {
+                              AppCubit.get(context).addProductFavorite(productId: productId);
+                            } else {
+                              AppCubit.get(context).removeProductFavorite(productId: productId);
+                            }
                           } else {
-
-                            AppCubit.get(context).removeProductFavorite(productId: productId);
+                            showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);
                           }
                         },
                         child: Padding(

@@ -27,7 +27,7 @@ class EmailVerificationScreen extends StatefulWidget {
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
-  int seconds = 300;
+  int seconds = 180;
 
   int sec = 60;
 
@@ -117,10 +117,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
               return WillPopScope(
                 onWillPop: () async {
-
-                  showFlutterToast(message: 'Complete your verification!', state: ToastStates.error, context: context);
+                  showFlutterToast(message: 'Verify your email!', state: ToastStates.error, context: context);
                   return false;
-
                 },
                 child: Scaffold(
                   appBar: AppBar(
@@ -167,7 +165,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                                     children: [
                                       TextSpan(
                                         text:
-                                            'If you don\'t verify your email in 5 minutes, your account will be deleted.',
+                                            'If you don\'t verify your email in 3 minutes, your account will be deleted.',
                                         style: TextStyle(
                                           color: redColor,
                                         ),
@@ -202,7 +200,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                                                     const Duration(seconds: 1))
                                                 .then((value) {
                                               setState(() {
-                                                sec = 60;
+                                                sec = 45;
                                               });
                                               startTime();
                                             });
@@ -252,11 +250,11 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                                         setState(() {
                                           isLoading = false;
                                         });
+                                        showFlutterToast(message: 'Done with success', state: ToastStates.success, context: context);
                                         CacheHelper.saveData(key: 'uId', value: widget.userId).then((value) {
                                           uId = widget.userId;
+                                          navigateAndNotReturn(context: context, screen: const AppLayout());
                                         });
-                                        showFlutterToast(message: 'Done with success', state: ToastStates.success, context: context);
-                                        navigateAndNotReturn(context: context, screen: const AppLayout());
                                       });
                                     },
                                     context: context) : CircularLoading(os: getOs()),

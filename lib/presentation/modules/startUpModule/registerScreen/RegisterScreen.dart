@@ -2,7 +2,7 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:trade_market_app/presentation/modules/startUpModule/emailVerficationScreen/EmailVerificationScreen.dart';
+import 'package:trade_market_app/presentation/modules/startUpModule/emailVerificationScreen/EmailVerificationScreen.dart';
 import 'package:trade_market_app/shared/adaptive/circularLoading/CircularLoading.dart';
 import 'package:trade_market_app/shared/components/Components.dart';
 import 'package:trade_market_app/shared/components/Constants.dart';
@@ -65,6 +65,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             if(state is SuccessUserCreateRegisterState) {
 
               showFlutterToast(message: 'Register done successfully', state: ToastStates.success, context: context);
+
+              uId = state.userModel.uId;
 
               RegisterCubit.get(context).sendEmailVerification();
 

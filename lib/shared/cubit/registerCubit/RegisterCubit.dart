@@ -68,6 +68,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
       imageProfile: profile,
       senders: {},
       deviceToken: deviceToken,
+      isEmailVerified: false,
       isInfoComplete: true,
     );
 
@@ -126,10 +127,6 @@ class RegisterCubit extends Cubit<RegisterStates> {
         }
 
         emit(SuccessAutoVerificationRegisterState());
-
-        if (kDebugMode) {
-          print(isVerified);
-        }
 
       });
 

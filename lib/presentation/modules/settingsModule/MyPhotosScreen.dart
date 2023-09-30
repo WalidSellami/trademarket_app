@@ -169,7 +169,9 @@ class _MyPhotosScreenState extends State<MyPhotosScreen> {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   clipBehavior: Clip.antiAliasWithSaveLayer,
-                  child: Image.asset('assets/images/mark.jpg'));
+                  child: Image.asset('assets/images/mark.jpg',
+                  fit: BoxFit.cover,
+                  ));
             },
           )),
     ),

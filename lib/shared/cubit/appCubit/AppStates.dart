@@ -34,11 +34,15 @@ class ErrorUpdateProfileAppState extends AppStates {
 
 }
 
+class SuccessUpdateAllProfileAppState extends AppStates {}
+
+
 
 // Get Image Profile
 class SuccessGetImageProfileAppState extends AppStates {}
 
 class ErrorGetImageProfileAppState extends AppStates {}
+
 
 
 class SuccessClearDataAppState extends AppStates {}
@@ -232,10 +236,22 @@ class ErrorDeleteProductAppState extends AppStates {
 
 
 
+// Delete All Favorites For Product
+class LoadingDeleteAllFavoritesForProductAppState extends AppStates {}
+
+class SuccessDeleteAllFavoritesForProductAppState extends AppStates {}
+
+class ErrorDeleteAllFavoritesForProductAppState extends AppStates {
+
+  dynamic error;
+  ErrorDeleteAllFavoritesForProductAppState(this.error);
+
+}
+
+
+
 // Add Product Favorite
 class LoadingAddProductFavoriteAppState extends AppStates {}
-
-class SuccessAddProductFavoriteAppState extends AppStates {}
 
 class ErrorAddProductFavoriteAppState extends AppStates {
 
@@ -244,12 +260,14 @@ class ErrorAddProductFavoriteAppState extends AppStates {
 
 }
 
+class LoadingGetUserFavoritesProductAppState extends AppStates {}
+
+class SuccessGetUserFavoritesProductAppState extends AppStates {}
+
 
 
 // Remove Product Favorite
 class LoadingRemoveProductFavoriteAppState extends AppStates {}
-
-class SuccessRemoveProductFavoriteAppState extends AppStates {}
 
 class ErrorRemoveProductFavoriteAppState extends AppStates {
 
@@ -324,6 +342,19 @@ class ErrorDeleteChatAppState extends AppStates {
 }
 
 
+// Delete Chat Messages
+class LoadingDeleteChatMessagesAppState extends AppStates {}
+
+class SuccessDeleteChatMessagesAppState extends AppStates {}
+
+class ErrorDeleteChatMessagesAppState extends AppStates {
+
+  dynamic error;
+  ErrorDeleteChatMessagesAppState(this.error);
+
+}
+
+
 // Get Message Image
 class SuccessGetMessageImageAppState extends AppStates {}
 
@@ -352,10 +383,12 @@ class ErrorSendMessageImageAppState extends AppStates {
 }
 
 
-// Send Message
+// Get Messages
 class LoadingGetMessagesAppState extends AppStates {}
 
 class SuccessGetMessagesAppState extends AppStates {}
+
+class SuccessGetReceiverMessagesAppState extends AppStates {}
 
 class ErrorGetMessagesAppState extends AppStates {
 

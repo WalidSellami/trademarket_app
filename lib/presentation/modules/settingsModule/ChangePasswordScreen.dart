@@ -162,6 +162,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                       oldPassword: oldPasswordController.text,
                                       newPassword: newPasswordController.text);
                                 }
+                              } else {
+                                showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);
                               }
                               return null;
                             },

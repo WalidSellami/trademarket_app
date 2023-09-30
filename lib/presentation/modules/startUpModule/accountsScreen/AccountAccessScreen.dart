@@ -38,6 +38,9 @@ class _AccountAccessScreenState extends State<AccountAccessScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(focusNode);
+    });
     passwordController.addListener(() {
       setState(() {});
     });
@@ -77,9 +80,6 @@ class _AccountAccessScreenState extends State<AccountAccessScreen> {
 
               });
             }
-
-
-
           },
           builder: (context , state) {
 

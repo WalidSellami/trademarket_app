@@ -54,50 +54,6 @@ class LoginCubit extends Cubit<LoginStates> {
 
 
 
-  // Already have account google signed
-  // Future<void> signInWithGoogleAccount() async {
-  //   emit(LoadingLoginWithGoogleAccountState());
-  //   // Trigger the authentication flow
-  //   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-  //
-  //   // Obtain the auth details from the request
-  //   final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-  //
-  //   // Create a new credential
-  //   final credential = GoogleAuthProvider.credential(
-  //     accessToken: googleAuth?.accessToken,
-  //     idToken: googleAuth?.idToken,
-  //   );
-  //
-  //   // Once signed in, return the UserCredential
-  //   FirebaseAuth.instance.signInWithCredential(credential).then((value) async {
-  //
-  //     CacheHelper.saveData(key: 'isGoogleSignIn', value: true).then((value) {
-  //       isGoogleSignIn = true;
-  //     });
-  //
-  //     var deviceToken = await getDeviceToken();
-  //
-  //     FirebaseFirestore.instance.collection('users').doc(value.user?.uid).update({
-  //       'device_token': deviceToken,
-  //     });
-  //
-  //     emit(SuccessLoginWithGoogleAccountState(value.user!.uid));
-  //
-  //   }).catchError((error) {
-  //
-  //     emit(ErrorLoginWithGoogleAccountState(error));
-  //   });
-  // }
-
-
-
-
-
-
-  // For the first Time
-
-
   Future<void> signInWithGoogle(context) async {
 
     emit(LoadingLoginWithGoogleAccountState());
@@ -122,13 +78,11 @@ class LoginCubit extends Cubit<LoginStates> {
     // Once signed in, return the UserCredential
     await FirebaseAuth.instance.signInWithCredential(credential).then((value) {
 
-
       FirebaseFirestore.instance.collection('users').doc(value.user?.uid).get().then((v) async {
 
         CacheHelper.saveData(key: 'isGoogleSignIn', value: true).then((value) {
           isGoogleSignIn = true;
         });
-
 
         if(v.data() == null) {
 
@@ -186,6 +140,7 @@ class LoginCubit extends Cubit<LoginStates> {
       imageProfile: imageProfile ?? profile,
       isInfoComplete: false,
       senders: {},
+      isEmailVerified: true,
       deviceToken: deviceToken,
     );
 

@@ -33,6 +33,14 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isVisible = true;
 
   @override
+  void initState() {
+    super.initState();
+    if(CheckCubit.get(context).hasInternet) {
+      AppCubit.get(context).getChats();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {

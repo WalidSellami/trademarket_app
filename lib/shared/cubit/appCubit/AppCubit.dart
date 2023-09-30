@@ -96,7 +96,6 @@ class AppCubit extends Cubit<AppStates> {
 
       emit(SuccessGetUserProfileAppState());
 
-
     });
 
 
@@ -145,9 +144,9 @@ class AppCubit extends Cubit<AppStates> {
     emit(LoadingUploadImageProfileAppState());
 
     firebase_storage.FirebaseStorage.instance.ref().child('users/$uId/${Uri.file(imageProfile!.path).pathSegments.last}')
-    .putFile(File(imageProfile!.path)).then((value) {
+    .putFile(File(imageProfile!.path)).then((value) async {
 
-      value.ref.getDownloadURL().then((value) {
+      await value.ref.getDownloadURL().then((value) async {
 
         updateProfile(
             fullName: fullName,
@@ -155,6 +154,7 @@ class AppCubit extends Cubit<AppStates> {
             address: address,
             imageProfile: value,
         );
+
 
       }).catchError((error) {
 
@@ -202,12 +202,46 @@ class AppCubit extends Cubit<AppStates> {
       imageProfile: imageProfile ?? userProfile?.imageProfile,
       senders: userProfile?.senders ?? {},
       isInfoComplete: true,
+      isEmailVerified: userProfile?.isEmailVerified ?? true,
       deviceToken: deviceToken,
     );
 
     FirebaseFirestore.instance.collection('users').doc(uId).update(model.toMap()).then((value) {
 
       getUserProfile();
+
+      Future.delayed(const Duration(seconds: 2)).then((value) {
+
+        FirebaseFirestore.instance.collection('products').where('uId_vendor' , isGreaterThanOrEqualTo: uId).get().then((value) {
+
+          if(value.docs.isNotEmpty) {
+            for(var element in value.docs) {
+              FirebaseFirestore.instance.collection('products').doc(element.id).update({
+                'vendor_name': fullName,
+                'image_profile_vendor': imageProfile ?? userProfile?.imageProfile,
+              });
+            }
+          }
+
+          emit(SuccessUpdateAllProfileAppState());
+
+        });
+
+        FirebaseFirestore.instance.collection('users').get().then((value) {
+
+          for(var element in value.docs) {
+            if(element.id != uId) {
+              element.reference.collection('chats').doc(uId).update({
+                'full_name': fullName,
+                'image_profile': imageProfile ?? userProfile?.imageProfile,
+              });
+            }
+          }
+
+          emit(SuccessUpdateAllProfileAppState());
+
+        });
+      });
 
     }).catchError((error) {
 
@@ -270,7 +304,6 @@ class AppCubit extends Cubit<AppStates> {
 
     var deviceToken = await getDeviceToken();
 
-    // Debug Mode
     isGoogleSignIn = CacheHelper.getData(key: 'isGoogleSignIn');
 
     FirebaseFirestore.instance.collection('saved').doc(uId).set(
@@ -538,7 +571,7 @@ class AppCubit extends Cubit<AppStates> {
 
     for(var element in images) {
 
-      var upload = firebase_storage.FirebaseStorage.instance.ref().child('products/${Uri.file(element.path).pathSegments.last}').
+      var upload = firebase_storage.FirebaseStorage.instance.ref().child('products/$uId/${Uri.file(element.path).pathSegments.last}').
       putFile(File(element.path));
 
       uploadTasks.add(upload.then((v) async {
@@ -641,6 +674,8 @@ class AppCubit extends Cubit<AppStates> {
 
 
   Map<String , dynamic> numberFavorites = {};
+
+  List<String> idUserFavorites = [];
 
 
 
@@ -920,6 +955,10 @@ class AppCubit extends Cubit<AppStates> {
 
     emit(LoadingDeleteProductAppState());
 
+    if(idUserFavorites.isNotEmpty || numberFavorites[productId] > 0) {
+      deleteAllFavoritesForProduct(productId: productId);
+    }
+
     FirebaseFirestore.instance.collection('products').doc(productId).delete().then((value) {
 
       for(var element in imagesUrl) {
@@ -945,6 +984,29 @@ class AppCubit extends Cubit<AppStates> {
 
   }
 
+
+  void deleteAllFavoritesForProduct({
+    required String productId,
+
+  }) {
+
+    emit(LoadingDeleteAllFavoritesForProductAppState());
+
+    for(var element in idUserFavorites) {
+
+      FirebaseFirestore.instance.collection('products').doc(productId).collection('favorites').doc(element).delete().then((value) {
+
+        emit(SuccessDeleteAllFavoritesForProductAppState());
+
+      }).catchError((error) {
+
+        emit(ErrorDeleteAllFavoritesForProductAppState(error));
+
+      });
+
+    }
+
+  }
 
 
   void addProductFavorite({
@@ -979,6 +1041,26 @@ class AppCubit extends Cubit<AppStates> {
 
   }
 
+
+  void getUserFavorites({
+    required String productId,
+}) {
+
+    emit(LoadingGetUserFavoritesProductAppState());
+
+    FirebaseFirestore.instance.collection('products').doc(productId).collection('favorites').snapshots().listen((event) {
+
+      for(var element in event.docs) {
+
+        idUserFavorites.add(element.id);
+
+      }
+
+      emit(SuccessGetUserFavoritesProductAppState());
+
+    });
+
+  }
 
 
   void removeProductFavorite({
@@ -1019,7 +1101,8 @@ class AppCubit extends Cubit<AppStates> {
     required String name,
 }) {
 
-    FirebaseFirestore.instance.collection('products').where('title_lowercase' , isGreaterThanOrEqualTo: name.toLowerCase()).get().then((value) {
+    FirebaseFirestore.instance.collection('products')
+        .where('title_lowercase' , isGreaterThanOrEqualTo: name.toLowerCase()).get().then((value) {
 
       searchIdProducts = [];
       searchProducts = [];
@@ -1084,7 +1167,13 @@ class AppCubit extends Cubit<AppStates> {
   }
 
 
+
   List<dynamic> chats = [];
+
+  List<MessageModel> messages = [];
+  List<String> idMessages = [];
+  List<MessageModel> receiverMessages = [];
+  List<String> receiverIdMessages = [];
 
 
   void getChats() {
@@ -1152,6 +1241,10 @@ class AppCubit extends Cubit<AppStates> {
 
     emit(LoadingDeleteChatAppState());
 
+    if(idMessages.isNotEmpty) {
+      deleteChatMessages(idChat: idChat);
+    }
+
     FirebaseFirestore.instance.collection('users').doc(uId).collection('chats').doc(idChat).delete().then((value) {
 
       emit(SuccessDeleteChatAppState());
@@ -1159,11 +1252,36 @@ class AppCubit extends Cubit<AppStates> {
     }).catchError((error) {
 
       emit(ErrorDeleteChatAppState(error));
+
     });
 
 
   }
 
+
+  void deleteChatMessages({
+    required String idChat,
+
+}) {
+
+    emit(LoadingDeleteChatMessagesAppState());
+
+    for(var element in idMessages) {
+
+      FirebaseFirestore.instance.collection('users').doc(uId).collection('chats').doc(idChat).collection('messages')
+          .doc(element).delete().then((value) {
+
+            emit(SuccessDeleteChatMessagesAppState());
+
+          }).catchError((error) {
+
+          emit(ErrorDeleteChatMessagesAppState(error));
+
+          });
+
+    }
+
+  }
 
 
   XFile? messageImage;
@@ -1262,7 +1380,6 @@ class AppCubit extends Cubit<AppStates> {
 
       FirebaseFirestore.instance.collection('users').doc(receiverId).update({
         'senders.$uId': true,
-
       });
 
       emit(SuccessSendMessageAppState());
@@ -1294,8 +1411,7 @@ class AppCubit extends Cubit<AppStates> {
 
 
 
-  List<MessageModel> messages = [];
-  List<String> idMessages = [];
+
 
   void getMessages({
     required String receiverId,
@@ -1320,6 +1436,22 @@ class AppCubit extends Cubit<AppStates> {
 
     });
 
+    FirebaseFirestore.instance.collection('users').doc(receiverId).collection('chats').doc(uId)
+        .collection('messages').orderBy('times_tamp').snapshots().listen((value) {
+
+      receiverIdMessages = [];
+
+      for(var element in value.docs) {
+
+        receiverIdMessages.add(element.id);
+        receiverMessages.add(MessageModel.fromJson(element.data()));
+
+      }
+
+      emit(SuccessGetReceiverMessagesAppState());
+
+    });
+
 
   }
 
@@ -1338,10 +1470,13 @@ class AppCubit extends Cubit<AppStates> {
   }
 
 
+
   void deleteMessage({
     required String receiverId,
     required String idMessage,
+    required String receiverIdMessage,
     String? messageImage,
+    bool isUnSend = false,
 }) {
 
     emit(LoadingDeleteMessageAppState());
@@ -1349,8 +1484,13 @@ class AppCubit extends Cubit<AppStates> {
     FirebaseFirestore.instance.collection('users').doc(uId).collection('chats').doc(receiverId).
     collection('messages').doc(idMessage).delete().then((value) {
 
-      if(messageImage != null) {
-        String fileName = decodeImageUrl(messageImage);
+      if(isUnSend) {
+        FirebaseFirestore.instance.collection('users').doc(receiverId).collection('chats').doc(uId).
+        collection('messages').doc(receiverIdMessage).delete();
+      }
+
+      if(messageImage != '') {
+        String fileName = decodeImageUrl(messageImage!);
         firebase_storage.FirebaseStorage.instance.ref().child('messages/$uId/$fileName').delete();
       }
 
@@ -1368,6 +1508,7 @@ class AppCubit extends Cubit<AppStates> {
 
 
   }
+
 
 
   void clearMessages() {

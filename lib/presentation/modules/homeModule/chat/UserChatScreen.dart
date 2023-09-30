@@ -16,7 +16,6 @@ import 'package:trade_market_app/shared/cubit/appCubit/AppStates.dart';
 import 'package:trade_market_app/shared/cubit/checkCubit/CheckCubit.dart';
 import 'package:trade_market_app/shared/cubit/checkCubit/CheckStates.dart';
 import 'package:trade_market_app/shared/cubit/themeCubit/ThemeCubit.dart';
-import 'package:trade_market_app/shared/styles/Styles.dart';
 
 class UserChatScreen extends StatefulWidget {
   final String receiverId;
@@ -90,10 +89,10 @@ class _UserChatScreenState extends State<UserChatScreen> {
                     .clearNotice(receiverId: widget.receiverId);
               }
 
-              if (state is SuccessDeleteMessageAppState) {
-                Navigator.pop(context);
-                focusNode.unfocus();
-              }
+              // if (state is SuccessDeleteMessageAppState) {
+              //   Navigator.pop(context);
+              //   focusNode.unfocus();
+              // }
 
               if (state is SuccessSendMessageAppState) {
                 msgController.text = '';
@@ -123,6 +122,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
 
               var messages = cubit.messages;
               var idMessages = cubit.idMessages;
+              var receiverIdMessage = cubit.receiverIdMessages;
 
               return WillPopScope(
                 onWillPop: () async {
@@ -155,20 +155,22 @@ class _UserChatScreenState extends State<UserChatScreen> {
                                       return buildItemSenderMessageWithImage(
                                           messages[index],
                                           idMessages[index],
+                                          receiverIdMessage[index],
                                           index);
                                     } else {
                                       return buildItemSenderMessage(
-                                          messages[index], idMessages[index]);
+                                          messages[index], idMessages[index], receiverIdMessage[index]);
                                     }
                                   } else {
                                     if (messages[index].messageImage != '') {
                                       return buildItemReceiverMessageWithImage(
                                           messages[index],
                                           idMessages[index],
+                                          receiverIdMessage[index],
                                           index);
                                     } else {
                                       return buildItemReceiverMessage(
-                                          messages[index], idMessages[index]);
+                                          messages[index], idMessages[index], receiverIdMessage[index]);
                                     }
                                   }
                                 },
@@ -423,7 +425,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
                                     ),
                                   ),
                                   onChanged: (value) {
-                                    if (value.isNotEmpty) {
+                                    if (value.isNotEmpty && value.trim().isNotEmpty) {
                                       setState(() {
                                         isVisible = true;
                                       });
@@ -447,19 +449,22 @@ class _UserChatScreenState extends State<UserChatScreen> {
                                     onPressed: () async {
                                       if (checkCubit.hasInternet) {
                                         if (cubit.messageImage == null) {
-                                          cubit.sendMessage(
-                                            receiverId: widget.receiverId,
-                                            messageText: msgController.text,
-                                          );
 
-                                          await cubit.sendNotification(
-                                              title: cubit.userProfile!.fullName
-                                                  .toString(),
-                                              body: 'Sent Message',
-                                              deviceToken: cubit
-                                                  .sellerProfile!.deviceToken
-                                                  .toString());
+                                            cubit.sendMessage(
+                                              receiverId: widget.receiverId,
+                                              messageText: msgController.text,
+                                            );
+
+                                            await cubit.sendNotification(
+                                                title: cubit.userProfile!.fullName
+                                                    .toString(),
+                                                body: 'Sent Message',
+                                                deviceToken: cubit
+                                                    .sellerProfile!.deviceToken
+                                                    .toString());
+
                                         } else {
+
                                           cubit.uploadImageMessage(
                                               receiverId: widget.receiverId,
                                               messageText: msgController.text,
@@ -514,6 +519,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
 
   Future<void> vocalSpeech() async {
     HapticFeedback.vibrate();
+    focusNode.unfocus();
     if (!isListen) {
       var available = await speechToText.initialize();
       setState(() {
@@ -537,10 +543,14 @@ class _UserChatScreenState extends State<UserChatScreen> {
     }
   }
 
-  Widget buildItemSenderMessage(MessageModel model, idMessage) =>
+  Widget buildItemSenderMessage(MessageModel model, idMessage, receiverIdMessage) =>
       GestureDetector(
         onLongPress: () {
-          showAlertRemoveMessage(context, idMessage);
+          if(CheckCubit.get(context).hasInternet) {
+            showRemoveOptions(model.receiverId, idMessage, receiverIdMessage, model.messageImage);
+          } else {
+            showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);
+          }
         },
         child: Align(
           alignment: Alignment.centerRight,
@@ -568,10 +578,14 @@ class _UserChatScreenState extends State<UserChatScreen> {
         ),
       );
 
-  Widget buildItemReceiverMessage(MessageModel model, idMessage) =>
+  Widget buildItemReceiverMessage(MessageModel model, idMessage, receiverIdMessage) =>
       GestureDetector(
         onLongPress: () {
-          showAlertRemoveMessage(context, idMessage);
+          if(CheckCubit.get(context).hasInternet) {
+            showRemoveOptions(model.receiverId, idMessage, receiverIdMessage, model.messageImage);
+          } else {
+            showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);
+          }
         },
         child: Align(
           alignment: Alignment.centerLeft,
@@ -600,10 +614,14 @@ class _UserChatScreenState extends State<UserChatScreen> {
       );
 
   Widget buildItemSenderMessageWithImage(
-          MessageModel model, idMessage, index) =>
+          MessageModel model, idMessage, receiverIdMessage, index) =>
       GestureDetector(
         onLongPress: () {
-          showAlertRemoveMessage(context, idMessage);
+          if(CheckCubit.get(context).hasInternet) {
+            showRemoveOptions(model.receiverId, idMessage, receiverIdMessage, model.messageImage);
+          } else {
+            showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);
+          }
         },
         child: Align(
           alignment: Alignment.centerRight,
@@ -716,10 +734,14 @@ class _UserChatScreenState extends State<UserChatScreen> {
       );
 
   Widget buildItemReceiverMessageWithImage(
-          MessageModel model, idMessage, index) =>
+          MessageModel model, idMessage, receiverIdMessage, index) =>
       GestureDetector(
         onLongPress: () {
-          showAlertRemoveMessage(context, idMessage);
+          if(CheckCubit.get(context).hasInternet) {
+            showRemoveOptions(model.receiverId, idMessage, receiverIdMessage, model.messageImage);
+          } else {
+            showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);
+          }
         },
         child: Align(
           alignment: Alignment.centerLeft,
@@ -831,57 +853,129 @@ class _UserChatScreenState extends State<UserChatScreen> {
         ),
       );
 
-  dynamic showAlertRemoveMessage(BuildContext context, idMessage) {
-    return showDialog(
-      context: context,
-      builder: (dialogContext) {
-        HapticFeedback.vibrate();
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              14.0,
-            ),
-          ),
-          title: const Text(
-            'Do you want to remove this message ?',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext);
-              },
-              child: const Text(
-                'No',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
+
+
+  dynamic showRemoveOptions(receiverId, idMessage, receiverIdMessage, messageImage) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          HapticFeedback.vibrate();
+          focusNode.unfocus();
+          return SafeArea(
+            child: Material(
+              color: ThemeCubit.get(context).isDark
+                  ? HexColor('161616')
+                  : Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Who do you want to remove this message for ?',
+                      style: TextStyle(
+                        fontSize: 12.0,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 4.0,
+                    ),
+                    ListTile(
+                      onTap: () {
+                        AppCubit.get(context).deleteMessage(
+                            receiverId: receiverId,
+                            idMessage: idMessage,
+                            receiverIdMessage: receiverIdMessage,
+                            messageImage: messageImage,
+                            isUnSend: true,
+                        );
+                        Navigator.pop(context);
+                      },
+                      leading: const Icon(
+                        Icons.delete_rounded,
+                      ),
+                      title: const Text(
+                        'UnSend',
+                      ),
+                    ),
+                    ListTile(
+                      onTap: () {
+                        AppCubit.get(context).deleteMessage(
+                            receiverId: receiverId,
+                            idMessage: idMessage,
+                            receiverIdMessage: receiverIdMessage,
+                            messageImage: messageImage,
+                        );
+                        Navigator.pop(context);
+                      },
+                      leading: const Icon(
+                        Icons.delete_rounded,
+                      ),
+                      title: const Text(
+                        'Remove for you',
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(dialogContext);
-                showLoading(context);
-                AppCubit.get(context).deleteMessage(
-                    receiverId: widget.receiverId, idMessage: idMessage);
-              },
-              child: Text(
-                'Yes',
-                style: TextStyle(
-                  color: redColor,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
+          );
+        });
   }
+
+  // dynamic showAlertRemoveMessage(BuildContext context, idMessage) {
+  //   return showDialog(
+  //     context: context,
+  //     builder: (dialogContext) {
+  //       HapticFeedback.vibrate();
+  //       return AlertDialog(
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(
+  //             14.0,
+  //           ),
+  //         ),
+  //         title: const Text(
+  //           'Do you want to remove this message ?',
+  //           textAlign: TextAlign.center,
+  //           style: TextStyle(
+  //             fontSize: 18.0,
+  //             fontWeight: FontWeight.bold,
+  //           ),
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.pop(dialogContext);
+  //             },
+  //             child: const Text(
+  //               'No',
+  //               style: TextStyle(
+  //                 fontSize: 16.0,
+  //                 fontWeight: FontWeight.bold,
+  //               ),
+  //             ),
+  //           ),
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.pop(dialogContext);
+  //               showLoading(context);
+  //               AppCubit.get(context).deleteMessage(
+  //                   receiverId: widget.receiverId, idMessage: idMessage);
+  //             },
+  //             child: Text(
+  //               'Yes',
+  //               style: TextStyle(
+  //                 color: redColor,
+  //                 fontSize: 16.0,
+  //                 fontWeight: FontWeight.bold,
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 }

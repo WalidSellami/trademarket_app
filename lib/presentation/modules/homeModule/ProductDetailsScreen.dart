@@ -35,6 +35,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
 
   @override
+  void initState() {
+    AppCubit.get(context).getSellerProfile(userId: widget.productDetails.uIdVendor.toString());
+    super.initState();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<CheckCubit , CheckStates>(
       listener: (context , state) {},
@@ -44,6 +51,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
         return BlocConsumer<AppCubit, AppStates>(
           listener: (context, state) {
+
+            var cubit = AppCubit.get(context);
+
 
             if(state is SuccessDeleteProductAppState) {
 
@@ -60,10 +70,22 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             }
 
             if(state is SuccessAddChatAppState) {
+
               Navigator.pop(context);
+              showFlutterToast(message: 'New chat added in your chats', state: ToastStates.success, context: context);
               Navigator.of(context).push(createSecondRoute(screen: UserChatScreen(
                   receiverId: widget.productDetails.uIdVendor.toString(),
                   fullName: widget.productDetails.vendorName.toString())));
+             cubit.sendNotification(
+                  title: 'New Chat',
+                  body: 'You have a new chat with ${cubit.userProfile?.fullName}',
+                  deviceToken: cubit.sellerProfile!.deviceToken.toString());
+            }
+
+            if(state is ErrorAddChatAppState) {
+
+              showFlutterToast(message: state.error.toString(), state: ToastStates.error, context: context);
+              Navigator.pop(context);
             }
 
           },
@@ -400,7 +422,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(6.0),
                 onTap: () {
-                  AppCubit.get(context).getSellerProfile(userId: widget.productDetails.uIdVendor.toString());
+                  // AppCubit.get(context).getSellerProfile(userId: widget.productDetails.uIdVendor.toString());
                   Navigator.of(context).push(createRoute(screen: const SellerProfileScreen()));
                 },
                 child: Padding(
@@ -496,6 +518,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(14.0),
                     onTap: () {
+                      AppCubit.get(context).getUserFavorites(productId: widget.productId);
                       showAlertRemove(context, widget.productId, widget.productDetails.images);
                     },
                     child: const Padding(
@@ -526,7 +549,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         HapticFeedback.vibrate();
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14.0,),
+            borderRadius: BorderRadius.circular(16.0,),
           ),
           title: const Text(
             'Do you want to remove this product ?',

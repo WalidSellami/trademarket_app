@@ -53,7 +53,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               listener: (context , state) {
 
                 if(state is SuccessSaveAccountAppState) {
-
                   CacheHelper.saveData(key: 'isSavedAccount', value: true).then((value) {
                     isSavedAccount = true;
                     logOut(context);
@@ -89,7 +88,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   child: Container(
                                     decoration: const BoxDecoration(),
                                     child: CircleAvatar(
-                                      radius: 52.0,
+                                      radius: 53.0,
                                       backgroundColor: themeCubit.isDark ? Colors.white : Colors.black,
                                       child: CircleAvatar(
                                         radius: 50.0,
@@ -421,6 +420,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         if(value == true) {
           Navigator.pop(context);
           navigateAndNotReturn(context: context, screen: const SavedAccountsScreen());
+          AppCubit.get(context).clearMessages();
           AppCubit.get(context).currentIndex = 0;
         }
       });
@@ -435,7 +435,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         HapticFeedback.vibrate();
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14.0,),
+            borderRadius: BorderRadius.circular(16.0,),
           ),
           title: const Text(
             'Do you want to log out ?',

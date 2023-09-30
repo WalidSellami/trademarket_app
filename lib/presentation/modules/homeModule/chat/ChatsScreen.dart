@@ -1,6 +1,7 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trade_market_app/data/models/userModel/UserModel.dart';
 import 'package:trade_market_app/presentation/modules/homeModule/chat/UserChatScreen.dart';
@@ -35,6 +36,7 @@ class ChatsScreen extends StatelessWidget {
 
                 if(state is SuccessDeleteChatAppState) {
                   showFlutterToast(message: 'Done with success', state: ToastStates.success, context: context);
+                  AppCubit.get(context).clearMessages();
                 }
 
                 if(state is ErrorDeleteChatAppState) {
@@ -117,7 +119,12 @@ class ChatsScreen extends StatelessWidget {
          fullName: model['full_name'],)));
     },
     onLongPress: () {
-      showAlertRemove(context, model['uId']);
+      if(CheckCubit.get(context).hasInternet) {
+        AppCubit.get(context).getMessages(receiverId: model['uId']);
+        showAlertRemove(context, model['uId'], model['uId']);
+      } else {
+        showFlutterToast(message: 'No Internet Connection', state: ToastStates.error, context: context);
+      }
     },
     child: Padding(
       padding: const EdgeInsets.symmetric(
@@ -171,10 +178,11 @@ class ChatsScreen extends StatelessWidget {
   );
 
 
-  dynamic showAlertRemove(BuildContext context , idChat) {
+  dynamic showAlertRemove(BuildContext context, idChat, receiverId) {
     return showDialog(
       context: context,
       builder: (dialogContext) {
+        HapticFeedback.vibrate();
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14.0,),
@@ -204,6 +212,9 @@ class ChatsScreen extends StatelessWidget {
               onPressed: () {
                 AppCubit.get(context).deleteChat(
                     idChat: idChat);
+                if(AppCubit.get(context).numberNotice > 0) {
+                  AppCubit.get(context).clearNotice(receiverId: receiverId);
+                }
                 Navigator.pop(dialogContext);
               },
               child: Text(

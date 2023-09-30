@@ -94,7 +94,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       actions: [
                         if(cubit.imageProfile != null)
                           defaultTextButton(
-                            text: 'Update & Upload',
+                            text: 'Upload & Update',
                             onPress: () {
                               if(checkCubit.hasInternet) {
                                 if(formKey.currentState!.validate()) {
@@ -126,7 +126,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               alignment: Alignment.bottomRight,
                               children: [
                                 CircleAvatar(
-                                  radius: 62.0,
+                                  radius: 63.0,
                                   backgroundColor: themeCubit.isDark ? Colors.white : Colors.black,
                                   child: CircleAvatar(
                                     radius: 60.0,
